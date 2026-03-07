@@ -1,0 +1,2776 @@
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+glsl-hills.tsx
+import { useEffect, useRef } from 'react';
+import * as THREE from 'three';
+
+const GLSLHills = ({ width = '100vw', height = '100vh', cameraZ = 125, planeSize = 256, speed = 0.5 }) => {
+  const canvasRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    // Plane class
+    class Plane {
+      constructor() {
+        this.uniforms = {
+          time: { type: 'f', value: 0 },
+        };
+        this.mesh = this.createMesh();
+        this.time = speed;
+      }
+
+      createMesh() {
+        return new THREE.Mesh(
+          new THREE.PlaneGeometry(planeSize, planeSize, planeSize, planeSize),
+          new THREE.RawShaderMaterial({
+            uniforms: this.uniforms,
+            vertexShader: `
+              #define GLSLIFY 1
+              attribute vec3 position;
+              uniform mat4 projectionMatrix;
+              uniform mat4 modelViewMatrix;
+              uniform float time;
+              varying vec3 vPosition;
+
+              mat4 rotateMatrixX(float radian) {
+                return mat4(
+                  1.0, 0.0, 0.0, 0.0,
+                  0.0, cos(radian), -sin(radian), 0.0,
+                  0.0, sin(radian), cos(radian), 0.0,
+                  0.0, 0.0, 0.0, 1.0
+                );
+              }
+
+              vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+              vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+              vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+              vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+              vec3 fade(vec3 t) { return t*t*t*(t*(t*6.0-15.0)+10.0); }
+
+              float cnoise(vec3 P) {
+                vec3 Pi0 = floor(P);
+                vec3 Pi1 = Pi0 + vec3(1.0);
+                Pi0 = mod289(Pi0);
+                Pi1 = mod289(Pi1);
+                vec3 Pf0 = fract(P);
+                vec3 Pf1 = Pf0 - vec3(1.0);
+                vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+                vec4 iy = vec4(Pi0.yy, Pi1.yy);
+                vec4 iz0 = Pi0.zzzz;
+                vec4 iz1 = Pi1.zzzz;
+
+                vec4 ixy = permute(permute(ix) + iy);
+                vec4 ixy0 = permute(ixy + iz0);
+                vec4 ixy1 = permute(ixy + iz1);
+
+                vec4 gx0 = ixy0 * (1.0 / 7.0);
+                vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+                gx0 = fract(gx0);
+                vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+                vec4 sz0 = step(gz0, vec4(0.0));
+                gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+                gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+                vec4 gx1 = ixy1 * (1.0 / 7.0);
+                vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+                gx1 = fract(gx1);
+                vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+                vec4 sz1 = step(gz1, vec4(0.0));
+                gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+                gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+                vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+                vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+                vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+                vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+                vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+                vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+                vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+                vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+                vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+                g000 *= norm0.x;
+                g010 *= norm0.y;
+                g100 *= norm0.z;
+                g110 *= norm0.w;
+                vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+                g001 *= norm1.x;
+                g011 *= norm1.y;
+                g101 *= norm1.z;
+                g111 *= norm1.w;
+
+                float n000 = dot(g000, Pf0);
+                float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+                float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+                float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+                float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+                float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+                float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+                float n111 = dot(g111, Pf1);
+
+                vec3 fade_xyz = fade(Pf0);
+                vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+                vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+                float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+                return 2.2 * n_xyz;
+              }
+
+              void main(void) {
+                vec3 updatePosition = (rotateMatrixX(radians(90.0)) * vec4(position, 1.0)).xyz;
+                float sin1 = sin(radians(updatePosition.x / 128.0 * 90.0));
+                vec3 noisePosition = updatePosition + vec3(0.0, 0.0, time * -30.0);
+                float noise1 = cnoise(noisePosition * 0.08);
+                float noise2 = cnoise(noisePosition * 0.06);
+                float noise3 = cnoise(noisePosition * 0.4);
+                vec3 lastPosition = updatePosition + vec3(0.0,
+                  noise1 * sin1 * 8.0
+                  + noise2 * sin1 * 8.0
+                  + noise3 * (abs(sin1) * 2.0 + 0.5)
+                  + pow(sin1, 2.0) * 40.0, 0.0);
+
+                vPosition = lastPosition;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(lastPosition, 1.0);
+              }
+            `,
+            fragmentShader: `
+              precision highp float;
+              #define GLSLIFY 1
+              varying vec3 vPosition;
+
+              void main(void) {
+                float opacity = (96.0 - length(vPosition)) / 256.0 * 0.6;
+                vec3 color = vec3(0.6);
+                gl_FragColor = vec4(color, opacity);
+              }
+            `,
+            transparent: true
+          })
+        );
+      }
+
+      render(time) {
+        this.uniforms.time.value += time * this.time;
+      }
+    }
+
+    // Three.js setup
+    const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, antialias: false });
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+    const clock = new THREE.Clock();
+    const plane = new Plane();
+
+    const resize = () => {
+      const canvas = canvasRef.current;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    const render = () => {
+      plane.render(clock.getDelta());
+      renderer.render(scene, camera);
+    };
+
+    const renderLoop = () => {
+      render();
+      requestAnimationFrame(renderLoop);
+    };
+
+    const init = () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0);
+      camera.position.set(0, 16, cameraZ);
+      camera.lookAt(new THREE.Vector3(0, 28, 0));
+      scene.add(plane.mesh);
+      window.addEventListener('resize', resize);
+      resize();
+      renderLoop();
+    };
+
+    init();
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }, [cameraZ, planeSize, speed]);
+
+  return (
+    <div ref={containerRef} style={{ position: 'relative', width, height }}> 
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          zIndex: 1
+        }}
+      />
+    </div>
+  );
+};
+
+export { GLSLHills } ;
+
+demo.tsx
+import { GLSLHills } from "@/components/ui/glsl-hills";
+
+export default function DemoOne() {
+  return (
+    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden ">
+    <GLSLHills/>
+    <div className="space-y-6 pointer-events-none z-10 text-center absolute">
+    <h1 className="font-semibold text-7xl whitespace-pre-wrap">
+    <span className="italic text-6xl font-thin">Designs That Speak <br/> </span>
+      Louder Than Words
+        </h1>
+        <p className="text-sm text-primary/60">
+          We craft stunning visuals and user - friendly experiences that  <br/>  help your brand stand out and connect with your audience.
+      </p>
+           </div> 
+      </div>
+  )
+}
+```
+
+Install NPM dependencies:
+```bash
+three
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
+
+
+
+
+
+
+
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+animated-glowing-search-bar.tsx
+import React from 'react';
+
+const SearchComponent = () => {
+  return (
+    <div className="relative flex items-center justify-center">
+      <div className="absolute z-[-1] w-full h-min-screen"></div>
+      <div id="poda" className="relative flex items-center justify-center group">
+        <div className="absolute z-[-1] overflow-hidden h-full w-full max-h-[70px] max-w-[314px] rounded-xl blur-[3px] 
+                        before:absolute before:content-[''] before:z-[-2] before:w-[999px] before:h-[999px] before:bg-no-repeat before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-60
+                        before:bg-[conic-gradient(#000,#402fb5_5%,#000_38%,#000_50%,#cf30aa_60%,#000_87%)] before:transition-all before:duration-2000
+                        group-hover:before:rotate-[-120deg] group-focus-within:before:rotate-[420deg] group-focus-within:before:duration-[4000ms]">
+        </div>
+        <div className="absolute z-[-1] overflow-hidden h-full w-full max-h-[65px] max-w-[312px] rounded-xl blur-[3px] 
+                        before:absolute before:content-[''] before:z-[-2] before:w-[600px] before:h-[600px] before:bg-no-repeat before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-[82deg]
+                        before:bg-[conic-gradient(rgba(0,0,0,0),#18116a,rgba(0,0,0,0)_10%,rgba(0,0,0,0)_50%,#6e1b60,rgba(0,0,0,0)_60%)] before:transition-all before:duration-2000
+                        group-hover:before:rotate-[-98deg] group-focus-within:before:rotate-[442deg] group-focus-within:before:duration-[4000ms]">
+        </div>
+        <div className="absolute z-[-1] overflow-hidden h-full w-full max-h-[65px] max-w-[312px] rounded-xl blur-[3px] 
+                        before:absolute before:content-[''] before:z-[-2] before:w-[600px] before:h-[600px] before:bg-no-repeat before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-[82deg]
+                        before:bg-[conic-gradient(rgba(0,0,0,0),#18116a,rgba(0,0,0,0)_10%,rgba(0,0,0,0)_50%,#6e1b60,rgba(0,0,0,0)_60%)] before:transition-all before:duration-2000
+                        group-hover:before:rotate-[-98deg] group-focus-within:before:rotate-[442deg] group-focus-within:before:duration-[4000ms]">
+        </div>
+        <div className="absolute z-[-1] overflow-hidden h-full w-full max-h-[65px] max-w-[312px] rounded-xl blur-[3px] 
+                        before:absolute before:content-[''] before:z-[-2] before:w-[600px] before:h-[600px] before:bg-no-repeat before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-[82deg]
+                        before:bg-[conic-gradient(rgba(0,0,0,0),#18116a,rgba(0,0,0,0)_10%,rgba(0,0,0,0)_50%,#6e1b60,rgba(0,0,0,0)_60%)] before:transition-all before:duration-2000
+                        group-hover:before:rotate-[-98deg] group-focus-within:before:rotate-[442deg] group-focus-within:before:duration-[4000ms]">
+        </div>
+
+        <div className="absolute z-[-1] overflow-hidden h-full w-full max-h-[63px] max-w-[307px] rounded-lg blur-[2px] 
+                        before:absolute before:content-[''] before:z-[-2] before:w-[600px] before:h-[600px] before:bg-no-repeat before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-[83deg]
+                        before:bg-[conic-gradient(rgba(0,0,0,0)_0%,#a099d8,rgba(0,0,0,0)_8%,rgba(0,0,0,0)_50%,#dfa2da,rgba(0,0,0,0)_58%)] before:brightness-140
+                        before:transition-all before:duration-2000 group-hover:before:rotate-[-97deg] group-focus-within:before:rotate-[443deg] group-focus-within:before:duration-[4000ms]">
+        </div>
+
+        <div className="absolute z-[-1] overflow-hidden h-full w-full max-h-[59px] max-w-[303px] rounded-xl blur-[0.5px] 
+                        before:absolute before:content-[''] before:z-[-2] before:w-[600px] before:h-[600px] before:bg-no-repeat before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-70
+                        before:bg-[conic-gradient(#1c191c,#402fb5_5%,#1c191c_14%,#1c191c_50%,#cf30aa_60%,#1c191c_64%)] before:brightness-130
+                        before:transition-all before:duration-2000 group-hover:before:rotate-[-110deg] group-focus-within:before:rotate-[430deg] group-focus-within:before:duration-[4000ms]">
+        </div>
+
+        <div id="main" className="relative group">
+          <input placeholder="Search..." type="text" name="text" className="bg-[#010201] border-none w-[301px] h-[56px] rounded-lg text-white px-[59px] text-lg focus:outline-none placeholder-gray-400" />
+          <div id="input-mask" className="pointer-events-none w-[100px] h-[20px] absolute bg-gradient-to-r from-transparent to-black top-[18px] left-[70px] group-focus-within:hidden"></div>
+          <div id="pink-mask" className="pointer-events-none w-[30px] h-[20px] absolute bg-[#cf30aa] top-[10px] left-[5px] blur-2xl opacity-80 transition-all duration-2000 group-hover:opacity-0"></div>
+          <div className="absolute h-[42px] w-[40px] overflow-hidden top-[7px] right-[7px] rounded-lg
+                          before:absolute before:content-[''] before:w-[600px] before:h-[600px] before:bg-no-repeat before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rotate-90
+                          before:bg-[conic-gradient(rgba(0,0,0,0),#3d3a4f,rgba(0,0,0,0)_50%,rgba(0,0,0,0)_50%,#3d3a4f,rgba(0,0,0,0)_100%)]
+                          before:brightness-135 before:animate-spin-slow">
+          </div>
+          <div id="filter-icon" className="absolute top-2 right-2 flex items-center justify-center z-[2] max-h-10 max-w-[38px] h-full w-full [isolation:isolate] overflow-hidden rounded-lg bg-gradient-to-b from-[#161329] via-black to-[#1d1b4b] border border-transparent">
+            <svg preserveAspectRatio="none" height="27" width="27" viewBox="4.8 4.56 14.832 15.408" fill="none">
+              <path d="M8.16 6.65002H15.83C16.47 6.65002 16.99 7.17002 16.99 7.81002V9.09002C16.99 9.56002 16.7 10.14 16.41 10.43L13.91 12.64C13.56 12.93 13.33 13.51 13.33 13.98V16.48C13.33 16.83 13.1 17.29 12.81 17.47L12 17.98C11.24 18.45 10.2 17.92 10.2 16.99V13.91C10.2 13.5 9.97 12.98 9.73 12.69L7.52 10.36C7.23 10.08 7 9.55002 7 9.20002V7.87002C7 7.17002 7.52 6.65002 8.16 6.65002Z" stroke="#d6d6e6" strokeWidth="1" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path>
+            </svg>
+          </div>
+          <div id="search-icon" className="absolute left-5 top-[15px]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" height="24" fill="none" className="feather feather-search">
+              <circle stroke="url(#search)" r="8" cy="11" cx="11"></circle>
+              <line stroke="url(#searchl)" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+              <defs>
+                <linearGradient gradientTransform="rotate(50)" id="search">
+                  <stop stopColor="#f8e7f8" offset="0%"></stop>
+                  <stop stopColor="#b6a9b7" offset="50%"></stop>
+                </linearGradient>
+                <linearGradient id="searchl">
+                  <stop stopColor="#b6a9b7" offset="0%"></stop>
+                  <stop stopColor="#837484" offset="50%"></stop>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SearchComponent;
+
+demo.tsx
+import SearchComponent from "@/components/ui/animated-glowing-search-bar";
+
+const DemoOne = () => {
+  return <SearchComponent />;
+};
+
+export { DemoOne };
+
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
+
+
+
+
+
+
+
+
+
+
+
+
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+spotlight-card.tsx
+import React, { useEffect, useRef, ReactNode } from 'react';
+
+interface GlowCardProps {
+  children: ReactNode;
+  className?: string;
+  glowColor?: 'blue' | 'purple' | 'green' | 'red' | 'orange';
+  size?: 'sm' | 'md' | 'lg';
+  width?: string | number;
+  height?: string | number;
+  customSize?: boolean; // When true, ignores size prop and uses width/height or className
+}
+
+const glowColorMap = {
+  blue: { base: 220, spread: 200 },
+  purple: { base: 280, spread: 300 },
+  green: { base: 120, spread: 200 },
+  red: { base: 0, spread: 200 },
+  orange: { base: 30, spread: 200 }
+};
+
+const sizeMap = {
+  sm: 'w-48 h-64',
+  md: 'w-64 h-80',
+  lg: 'w-80 h-96'
+};
+
+const GlowCard: React.FC<GlowCardProps> = ({ 
+  children, 
+  className = '', 
+  glowColor = 'blue',
+  size = 'md',
+  width,
+  height,
+  customSize = false
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const syncPointer = (e: PointerEvent) => {
+      const { clientX: x, clientY: y } = e;
+      
+      if (cardRef.current) {
+        cardRef.current.style.setProperty('--x', x.toFixed(2));
+        cardRef.current.style.setProperty('--xp', (x / window.innerWidth).toFixed(2));
+        cardRef.current.style.setProperty('--y', y.toFixed(2));
+        cardRef.current.style.setProperty('--yp', (y / window.innerHeight).toFixed(2));
+      }
+    };
+
+    document.addEventListener('pointermove', syncPointer);
+    return () => document.removeEventListener('pointermove', syncPointer);
+  }, []);
+
+  const { base, spread } = glowColorMap[glowColor];
+
+  // Determine sizing
+  const getSizeClasses = () => {
+    if (customSize) {
+      return ''; // Let className or inline styles handle sizing
+    }
+    return sizeMap[size];
+  };
+
+  const getInlineStyles = () => {
+    const baseStyles = {
+      '--base': base,
+      '--spread': spread,
+      '--radius': '14',
+      '--border': '3',
+      '--backdrop': 'hsl(0 0% 60% / 0.12)',
+      '--backup-border': 'var(--backdrop)',
+      '--size': '200',
+      '--outer': '1',
+      '--border-size': 'calc(var(--border, 2) * 1px)',
+      '--spotlight-size': 'calc(var(--size, 150) * 1px)',
+      '--hue': 'calc(var(--base) + (var(--xp, 0) * var(--spread, 0)))',
+      backgroundImage: `radial-gradient(
+        var(--spotlight-size) var(--spotlight-size) at
+        calc(var(--x, 0) * 1px)
+        calc(var(--y, 0) * 1px),
+        hsl(var(--hue, 210) calc(var(--saturation, 100) * 1%) calc(var(--lightness, 70) * 1%) / var(--bg-spot-opacity, 0.1)), transparent
+      )`,
+      backgroundColor: 'var(--backdrop, transparent)',
+      backgroundSize: 'calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)))',
+      backgroundPosition: '50% 50%',
+      backgroundAttachment: 'fixed',
+      border: 'var(--border-size) solid var(--backup-border)',
+      position: 'relative' as const,
+      touchAction: 'none' as const,
+    };
+
+    // Add width and height if provided
+    if (width !== undefined) {
+      baseStyles.width = typeof width === 'number' ? `${width}px` : width;
+    }
+    if (height !== undefined) {
+      baseStyles.height = typeof height === 'number' ? `${height}px` : height;
+    }
+
+    return baseStyles;
+  };
+
+  const beforeAfterStyles = `
+    [data-glow]::before,
+    [data-glow]::after {
+      pointer-events: none;
+      content: "";
+      position: absolute;
+      inset: calc(var(--border-size) * -1);
+      border: var(--border-size) solid transparent;
+      border-radius: calc(var(--radius) * 1px);
+      background-attachment: fixed;
+      background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+      mask-clip: padding-box, border-box;
+      mask-composite: intersect;
+    }
+    
+    [data-glow]::before {
+      background-image: radial-gradient(
+        calc(var(--spotlight-size) * 0.75) calc(var(--spotlight-size) * 0.75) at
+        calc(var(--x, 0) * 1px)
+        calc(var(--y, 0) * 1px),
+        hsl(var(--hue, 210) calc(var(--saturation, 100) * 1%) calc(var(--lightness, 50) * 1%) / var(--border-spot-opacity, 1)), transparent 100%
+      );
+      filter: brightness(2);
+    }
+    
+    [data-glow]::after {
+      background-image: radial-gradient(
+        calc(var(--spotlight-size) * 0.5) calc(var(--spotlight-size) * 0.5) at
+        calc(var(--x, 0) * 1px)
+        calc(var(--y, 0) * 1px),
+        hsl(0 100% 100% / var(--border-light-opacity, 1)), transparent 100%
+      );
+    }
+    
+    [data-glow] [data-glow] {
+      position: absolute;
+      inset: 0;
+      will-change: filter;
+      opacity: var(--outer, 1);
+      border-radius: calc(var(--radius) * 1px);
+      border-width: calc(var(--border-size) * 20);
+      filter: blur(calc(var(--border-size) * 10));
+      background: none;
+      pointer-events: none;
+      border: none;
+    }
+    
+    [data-glow] > [data-glow]::before {
+      inset: -10px;
+      border-width: 10px;
+    }
+  `;
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: beforeAfterStyles }} />
+      <div
+        ref={cardRef}
+        data-glow
+        style={getInlineStyles()}
+        className={`
+          ${getSizeClasses()}
+          ${!customSize ? 'aspect-[3/4]' : ''}
+          rounded-2xl 
+          relative 
+          grid 
+          grid-rows-[1fr_auto] 
+          shadow-[0_1rem_2rem_-1rem_black] 
+          p-4 
+          gap-4 
+          backdrop-blur-[5px]
+          ${className}
+        `}
+      >
+        <div ref={innerRef} data-glow></div>
+        {children}
+      </div>
+    </>
+  );
+};
+
+export { GlowCard }
+
+demo.tsx
+import { GlowCard } from "@/components/ui/spotlight-card";
+
+export function Default(){
+  return(
+    <div className="w-screen h-screen flex flex-row items-center justify-center gap-10 custom-cursor">
+      <GlowCard />
+      <GlowCard />
+      <GlowCard />
+    </div>
+  );
+};
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+neon-button.tsx
+import React from 'react'
+import { cn } from '@/lib/utils'
+import { VariantProps, cva } from "class-variance-authority";
+
+const buttonVariants = cva(
+    "relative group border text-foreground mx-auto text-center rounded-full",
+    {
+        variants: {
+            variant: {
+                default: "bg-blue-500/5 hover:bg-blue-500/0 border-blue-500/20",
+                solid: "bg-blue-500 hover:bg-blue-600 text-white border-transparent hover:border-foreground/50 transition-all duration-200",
+                ghost: "border-transparent bg-transparent hover:border-zinc-600 hover:bg-white/10",
+            },
+            size: {
+                default: "px-7 py-1.5 ",
+                sm: "px-4 py-0.5 ",
+                lg: "px-10 py-2.5 ",
+            },
+        },
+        defaultVariants: {
+            variant: "default",
+            size: "default",
+        },
+    }
+);
+
+export interface ButtonProps
+    extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> { neon?: boolean }
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+    ({ className, neon = true, size, variant, children, ...props }, ref) => {
+        return (
+            <button
+                className={cn(buttonVariants({ variant, size }), className)}
+                ref={ref}
+                {...props}
+            >
+                <span className={cn("absolute h-px opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out inset-x-0 inset-y-0 bg-gradient-to-r w-3/4 mx-auto from-transparent dark:via-blue-500 via-blue-600 to-transparent hidden", neon && "block")} />
+                {children}
+                <span className={cn("absolute group-hover:opacity-30 transition-all duration-500 ease-in-out inset-x-0 h-px -bottom-px bg-gradient-to-r w-3/4 mx-auto from-transparent dark:via-blue-500 via-blue-600 to-transparent hidden", neon && "block")} />
+            </button>
+        );
+    }
+)
+
+Button.displayName = 'Button';
+
+export { Button, buttonVariants };
+
+demo.tsx
+import { Button } from "@/components/ui/neon-button"
+
+
+const Default = () => {
+    return (
+        <>
+            <div className="flex flex-col gap-3">
+                <Button>Button</Button>
+                <WithNoNeon />
+                <Solid />
+            </div>
+        </>
+    )
+}
+
+const WithNoNeon = () => {
+    return (
+        <>
+            <div className="flex flex-col gap-2">
+                <Button neon={false}>normal button</Button>
+            </div>
+        </>
+    )
+}
+
+const Solid = () => {
+    return (
+        <>
+            <div className="flex flex-col gap-2">
+                <Button variant={"solid"}>solid</Button>
+            </div>
+        </>
+    )
+}
+
+export { Default, WithNoNeon, Solid }
+```
+
+Install NPM dependencies:
+```bash
+class-variance-authority
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+hover-footer.tsx
+"use client";
+import React, { useRef, useEffect, useState } from "react";
+import { motion } from "motion/react";
+import { cn } from "@/lib/utils";
+
+export const TextHoverEffect = ({
+  text,
+  duration,
+  className,
+}: {
+  text: string;
+  duration?: number;
+  automatic?: boolean;
+  className?: string;
+}) => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const [hovered, setHovered] = useState(false);
+  const [maskPosition, setMaskPosition] = useState({ cx: "50%", cy: "50%" });
+
+  useEffect(() => {
+    if (svgRef.current && cursor.x !== null && cursor.y !== null) {
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const cxPercentage = ((cursor.x - svgRect.left) / svgRect.width) * 100;
+      const cyPercentage = ((cursor.y - svgRect.top) / svgRect.height) * 100;
+      setMaskPosition({
+        cx: `${cxPercentage}%`,
+        cy: `${cyPercentage}%`,
+      });
+    }
+  }, [cursor]);
+
+  return (
+    <svg
+      ref={svgRef}
+      width="100%"
+      height="100%"
+      viewBox="0 0 300 100"
+      xmlns="http://www.w3.org/2000/svg"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={(e) => setCursor({ x: e.clientX, y: e.clientY })}
+      className={cn("select-none uppercase cursor-pointer", className)}
+    >
+      <defs>
+        <linearGradient
+          id="textGradient"
+          gradientUnits="userSpaceOnUse"
+          cx="50%"
+          cy="50%"
+          r="25%"
+        >
+          {hovered && (
+            <>
+              <stop offset="0%" stopColor="#eab308" />
+              <stop offset="25%" stopColor="#ef4444" />
+              <stop offset="50%" stopColor="#80eeb4" />
+              <stop offset="75%" stopColor="#06b6d4" />
+              <stop offset="100%" stopColor="#8b5cf6" />
+            </>
+          )}
+        </linearGradient>
+
+        <motion.radialGradient
+          id="revealMask"
+          gradientUnits="userSpaceOnUse"
+          r="20%"
+          initial={{ cx: "50%", cy: "50%" }}
+          animate={maskPosition}
+          transition={{ duration: duration ?? 0, ease: "easeOut" }}
+        >
+          <stop offset="0%" stopColor="white" />
+          <stop offset="100%" stopColor="black" />
+        </motion.radialGradient>
+        <mask id="textMask">
+          <rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            fill="url(#revealMask)"
+          />
+        </mask>
+      </defs>
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        strokeWidth="0.3"
+        className="fill-transparent stroke-neutral-200 font-[helvetica] text-7xl font-bold dark:stroke-neutral-800"
+        style={{ opacity: hovered ? 0.7 : 0 }}
+      >
+        {text}
+      </text>
+      <motion.text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        strokeWidth="0.3"
+        className="fill-transparent stroke-[#3ca2fa] font-[helvetica] text-7xl font-bold 
+        dark:stroke-[#3ca2fa99]"
+        initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
+        animate={{
+          strokeDashoffset: 0,
+          strokeDasharray: 1000,
+        }}
+        transition={{
+          duration: 4,
+          ease: "easeInOut",
+        }}
+      >
+        {text}
+      </motion.text>
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        stroke="url(#textGradient)"
+        strokeWidth="0.3"
+        mask="url(#textMask)"
+        className="fill-transparent font-[helvetica] text-7xl font-bold"
+      >
+        {text}
+      </text>
+    </svg>
+  );
+};
+
+
+export const FooterBackgroundGradient = () => {
+  return (
+    <div
+      className="absolute inset-0 z-0"
+      style={{
+        background:
+          "radial-gradient(125% 125% at 50% 10%, #0F0F1166 50%, #3ca2fa33 100%)",
+      }}
+    />
+  );
+};
+
+demo.tsx
+"use client";
+import React from "react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Instagram,
+  Twitter,
+  Dribbble,
+  Globe,
+} from "lucide-react";
+import {FooterBackgroundGradient} from "@/components/ui/hover-footer";
+import { TextHoverEffect } from "@/components/ui/hover-footer";
+
+function HoverFooter() {
+  // Footer link data
+  const footerLinks = [
+    {
+      title: "About Us",
+      links: [
+        { label: "Company History", href: "#" },
+        { label: "Meet the Team", href: "#" },
+        { label: "Employee Handbook", href: "#" },
+        { label: "Careers", href: "#" },
+      ],
+    },
+    {
+      title: "Helpful Links",
+      links: [
+        { label: "FAQs", href: "#" },
+        { label: "Support", href: "#" },
+        {
+          label: "Live Chat",
+          href: "#",
+          pulse: true,
+        },
+      ],
+    },
+  ];
+
+  // Contact info data
+  const contactInfo = [
+    {
+      icon: <Mail size={18} className="text-[#3ca2fa]" />,
+      text: "hello@nurui.com",
+      href: "mailto:hello@nurui.com",
+    },
+    {
+      icon: <Phone size={18} className="text-[#3ca2fa]" />,
+      text: "+91 86373 73116",
+      href: "tel:+918637373116",
+    },
+    {
+      icon: <MapPin size={18} className="text-[#3ca2fa]" />,
+      text: "Sylhet, Bangladesh",
+    },
+  ];
+
+  // Social media icons
+  const socialLinks = [
+    { icon: <Facebook size={20} />, label: "Facebook", href: "#" },
+    { icon: <Instagram size={20} />, label: "Instagram", href: "#" },
+    { icon: <Twitter size={20} />, label: "Twitter", href: "#" },
+    { icon: <Dribbble size={20} />, label: "Dribbble", href: "#" },
+    { icon: <Globe size={20} />, label: "Globe", href: "#" },
+  ];
+
+  return (
+    <footer className="bg-[#0F0F11]/10 relative h-fit rounded-3xl overflow-hidden m-8">
+      <div className="max-w-7xl mx-auto p-14 z-40 relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 lg:gap-16 pb-12">
+          {/* Brand section */}
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-[#3ca2fa] text-3xl font-extrabold">
+                &hearts;
+              </span>
+              <span className="text-white text-3xl font-bold">Nur/ui</span>
+            </div>
+            <p className="text-sm leading-relaxed">
+              Nur UI is a modern React and Next.js based UI component library.
+            </p>
+          </div>
+
+          {/* Footer link sections */}
+          {footerLinks.map((section) => (
+            <div key={section.title}>
+              <h4 className="text-white text-lg font-semibold mb-6">
+                {section.title}
+              </h4>
+              <ul className="space-y-3">
+                {section.links.map((link) => (
+                  <li key={link.label} className="relative">
+                    <a
+                      href={link.href}
+                      className="hover:text-[#3ca2fa] transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                    {link.pulse && (
+                      <span className="absolute top-0 right-[-10px] w-2 h-2 rounded-full bg-[#3ca2fa] animate-pulse"></span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          {/* Contact section */}
+          <div>
+            <h4 className="text-white text-lg font-semibold mb-6">
+              Contact Us
+            </h4>
+            <ul className="space-y-4">
+              {contactInfo.map((item, i) => (
+                <li key={i} className="flex items-center space-x-3">
+                  {item.icon}
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      className="hover:text-[#3ca2fa] transition-colors"
+                    >
+                      {item.text}
+                    </a>
+                  ) : (
+                    <span className="hover:text-[#3ca2fa] transition-colors">
+                      {item.text}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <hr className="border-t border-gray-700 my-8" />
+
+        {/* Footer bottom */}
+        <div className="flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
+          {/* Social icons */}
+          <div className="flex space-x-6 text-gray-400">
+            {socialLinks.map(({ icon, label, href }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                className="hover:text-[#3ca2fa] transition-colors"
+              >
+                {icon}
+              </a>
+            ))}
+          </div>
+
+          {/* Copyright */}
+          <p className="text-center md:text-left">
+            &copy; {new Date().getFullYear()} Nurui. All rights reserved.
+          </p>
+        </div>
+      </div>
+
+      {/* Text hover effect */}
+      <div className="lg:flex hidden h-[30rem] -mt-52 -mb-36">
+        <TextHoverEffect text="Nurui" className="z-50" />
+      </div>
+
+      <FooterBackgroundGradient />
+    </footer>
+  );
+}
+
+export default HoverFooter;
+```
+
+Install NPM dependencies:
+```bash
+motion
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+hover-footer.tsx
+"use client";
+import React, { useRef, useEffect, useState } from "react";
+import { motion } from "motion/react";
+import { cn } from "@/lib/utils";
+
+export const TextHoverEffect = ({
+  text,
+  duration,
+  className,
+}: {
+  text: string;
+  duration?: number;
+  automatic?: boolean;
+  className?: string;
+}) => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const [hovered, setHovered] = useState(false);
+  const [maskPosition, setMaskPosition] = useState({ cx: "50%", cy: "50%" });
+
+  useEffect(() => {
+    if (svgRef.current && cursor.x !== null && cursor.y !== null) {
+      const svgRect = svgRef.current.getBoundingClientRect();
+      const cxPercentage = ((cursor.x - svgRect.left) / svgRect.width) * 100;
+      const cyPercentage = ((cursor.y - svgRect.top) / svgRect.height) * 100;
+      setMaskPosition({
+        cx: `${cxPercentage}%`,
+        cy: `${cyPercentage}%`,
+      });
+    }
+  }, [cursor]);
+
+  return (
+    <svg
+      ref={svgRef}
+      width="100%"
+      height="100%"
+      viewBox="0 0 300 100"
+      xmlns="http://www.w3.org/2000/svg"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={(e) => setCursor({ x: e.clientX, y: e.clientY })}
+      className={cn("select-none uppercase cursor-pointer", className)}
+    >
+      <defs>
+        <linearGradient
+          id="textGradient"
+          gradientUnits="userSpaceOnUse"
+          cx="50%"
+          cy="50%"
+          r="25%"
+        >
+          {hovered && (
+            <>
+              <stop offset="0%" stopColor="#eab308" />
+              <stop offset="25%" stopColor="#ef4444" />
+              <stop offset="50%" stopColor="#80eeb4" />
+              <stop offset="75%" stopColor="#06b6d4" />
+              <stop offset="100%" stopColor="#8b5cf6" />
+            </>
+          )}
+        </linearGradient>
+
+        <motion.radialGradient
+          id="revealMask"
+          gradientUnits="userSpaceOnUse"
+          r="20%"
+          initial={{ cx: "50%", cy: "50%" }}
+          animate={maskPosition}
+          transition={{ duration: duration ?? 0, ease: "easeOut" }}
+        >
+          <stop offset="0%" stopColor="white" />
+          <stop offset="100%" stopColor="black" />
+        </motion.radialGradient>
+        <mask id="textMask">
+          <rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            fill="url(#revealMask)"
+          />
+        </mask>
+      </defs>
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        strokeWidth="0.3"
+        className="fill-transparent stroke-neutral-200 font-[helvetica] text-7xl font-bold dark:stroke-neutral-800"
+        style={{ opacity: hovered ? 0.7 : 0 }}
+      >
+        {text}
+      </text>
+      <motion.text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        strokeWidth="0.3"
+        className="fill-transparent stroke-[#3ca2fa] font-[helvetica] text-7xl font-bold 
+        dark:stroke-[#3ca2fa99]"
+        initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
+        animate={{
+          strokeDashoffset: 0,
+          strokeDasharray: 1000,
+        }}
+        transition={{
+          duration: 4,
+          ease: "easeInOut",
+        }}
+      >
+        {text}
+      </motion.text>
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        stroke="url(#textGradient)"
+        strokeWidth="0.3"
+        mask="url(#textMask)"
+        className="fill-transparent font-[helvetica] text-7xl font-bold"
+      >
+        {text}
+      </text>
+    </svg>
+  );
+};
+
+
+export const FooterBackgroundGradient = () => {
+  return (
+    <div
+      className="absolute inset-0 z-0"
+      style={{
+        background:
+          "radial-gradient(125% 125% at 50% 10%, #0F0F1166 50%, #3ca2fa33 100%)",
+      }}
+    />
+  );
+};
+
+demo.tsx
+"use client";
+import React from "react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Instagram,
+  Twitter,
+  Dribbble,
+  Globe,
+} from "lucide-react";
+import {FooterBackgroundGradient} from "@/components/ui/hover-footer";
+import { TextHoverEffect } from "@/components/ui/hover-footer";
+
+function HoverFooter() {
+  // Footer link data
+  const footerLinks = [
+    {
+      title: "About Us",
+      links: [
+        { label: "Company History", href: "#" },
+        { label: "Meet the Team", href: "#" },
+        { label: "Employee Handbook", href: "#" },
+        { label: "Careers", href: "#" },
+      ],
+    },
+    {
+      title: "Helpful Links",
+      links: [
+        { label: "FAQs", href: "#" },
+        { label: "Support", href: "#" },
+        {
+          label: "Live Chat",
+          href: "#",
+          pulse: true,
+        },
+      ],
+    },
+  ];
+
+  // Contact info data
+  const contactInfo = [
+    {
+      icon: <Mail size={18} className="text-[#3ca2fa]" />,
+      text: "hello@nurui.com",
+      href: "mailto:hello@nurui.com",
+    },
+    {
+      icon: <Phone size={18} className="text-[#3ca2fa]" />,
+      text: "+91 86373 73116",
+      href: "tel:+918637373116",
+    },
+    {
+      icon: <MapPin size={18} className="text-[#3ca2fa]" />,
+      text: "Sylhet, Bangladesh",
+    },
+  ];
+
+  // Social media icons
+  const socialLinks = [
+    { icon: <Facebook size={20} />, label: "Facebook", href: "#" },
+    { icon: <Instagram size={20} />, label: "Instagram", href: "#" },
+    { icon: <Twitter size={20} />, label: "Twitter", href: "#" },
+    { icon: <Dribbble size={20} />, label: "Dribbble", href: "#" },
+    { icon: <Globe size={20} />, label: "Globe", href: "#" },
+  ];
+
+  return (
+    <footer className="bg-[#0F0F11]/10 relative h-fit rounded-3xl overflow-hidden m-8">
+      <div className="max-w-7xl mx-auto p-14 z-40 relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 lg:gap-16 pb-12">
+          {/* Brand section */}
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-[#3ca2fa] text-3xl font-extrabold">
+                &hearts;
+              </span>
+              <span className="text-white text-3xl font-bold">Nur/ui</span>
+            </div>
+            <p className="text-sm leading-relaxed">
+              Nur UI is a modern React and Next.js based UI component library.
+            </p>
+          </div>
+
+          {/* Footer link sections */}
+          {footerLinks.map((section) => (
+            <div key={section.title}>
+              <h4 className="text-white text-lg font-semibold mb-6">
+                {section.title}
+              </h4>
+              <ul className="space-y-3">
+                {section.links.map((link) => (
+                  <li key={link.label} className="relative">
+                    <a
+                      href={link.href}
+                      className="hover:text-[#3ca2fa] transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                    {link.pulse && (
+                      <span className="absolute top-0 right-[-10px] w-2 h-2 rounded-full bg-[#3ca2fa] animate-pulse"></span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          {/* Contact section */}
+          <div>
+            <h4 className="text-white text-lg font-semibold mb-6">
+              Contact Us
+            </h4>
+            <ul className="space-y-4">
+              {contactInfo.map((item, i) => (
+                <li key={i} className="flex items-center space-x-3">
+                  {item.icon}
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      className="hover:text-[#3ca2fa] transition-colors"
+                    >
+                      {item.text}
+                    </a>
+                  ) : (
+                    <span className="hover:text-[#3ca2fa] transition-colors">
+                      {item.text}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <hr className="border-t border-gray-700 my-8" />
+
+        {/* Footer bottom */}
+        <div className="flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
+          {/* Social icons */}
+          <div className="flex space-x-6 text-gray-400">
+            {socialLinks.map(({ icon, label, href }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                className="hover:text-[#3ca2fa] transition-colors"
+              >
+                {icon}
+              </a>
+            ))}
+          </div>
+
+          {/* Copyright */}
+          <p className="text-center md:text-left">
+            &copy; {new Date().getFullYear()} Nurui. All rights reserved.
+          </p>
+        </div>
+      </div>
+
+      {/* Text hover effect */}
+      <div className="lg:flex hidden h-[30rem] -mt-52 -mb-36">
+        <TextHoverEffect text="Nurui" className="z-50" />
+      </div>
+
+      <FooterBackgroundGradient />
+    </footer>
+  );
+}
+
+export default HoverFooter;
+```
+
+Install NPM dependencies:
+```bash
+motion
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+pulse-beams.tsx
+"use client";
+
+import React from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+
+interface BeamPath {
+  path: string;
+  gradientConfig: {
+    initial: {
+      x1: string;
+      x2: string;
+      y1: string;
+      y2: string;
+    };
+    animate: {
+      x1: string | string[];
+      x2: string | string[];
+      y1: string | string[];
+      y2: string | string[];
+    };
+    transition?: {
+      duration?: number;
+      repeat?: number;
+      repeatType?: string;
+      ease?: string;
+      repeatDelay?: number;
+      delay?: number;
+    };
+  };
+  connectionPoints?: Array<{
+    cx: number;
+    cy: number;
+    r: number;
+  }>;
+}
+
+interface PulseBeamsProps {
+  children?: React.ReactNode;
+  className?: string;
+  background?: React.ReactNode;
+  beams: BeamPath[];
+  width?: number;
+  height?: number;
+  baseColor?: string;
+  accentColor?: string;
+  gradientColors?: {
+    start: string;
+    middle: string;
+    end: string;
+  };
+}
+
+export const PulseBeams = ({
+  children,
+  className,
+  background,
+  beams,
+  width = 858,
+  height = 434,
+  baseColor = "var(--slate-800)",
+  accentColor = "var(--slate-600)",
+  gradientColors,
+}: PulseBeamsProps) => {
+  return (
+    <div
+      className={cn(
+        "w-full h-screen relative flex items-center justify-center antialiased overflow-hidden",
+        className
+      )}
+    >
+      {background}
+      <div className="relative z-10">{children}</div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <SVGs
+          beams={beams}
+          width={width}
+          height={height}
+          baseColor={baseColor}
+          accentColor={accentColor}
+          gradientColors={gradientColors}
+        />
+      </div>
+    </div>
+  );
+};
+
+const SVGs = ({ beams, width, height, baseColor, accentColor, gradientColors }) => {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="flex flex-shrink-0"
+    >
+      {beams.map((beam, index) => (
+        <React.Fragment key={index}>
+          <path
+            d={beam.path}
+            stroke={baseColor}
+            strokeWidth="1"
+          />
+          <path
+            d={beam.path}
+            stroke={`url(#grad${index})`}
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          {beam.connectionPoints?.map((point, pointIndex) => (
+            <circle
+              key={`${index}-${pointIndex}`}
+              cx={point.cx}
+              cy={point.cy}
+              r={point.r}
+              fill={baseColor}
+              stroke={accentColor}
+            />
+          ))}
+        </React.Fragment>
+      ))}
+
+      <defs>
+        {beams.map((beam, index) => (
+          <motion.linearGradient
+            key={index}
+            id={`grad${index}`}
+            gradientUnits="userSpaceOnUse"
+            initial={beam.gradientConfig.initial}
+            animate={beam.gradientConfig.animate}
+            transition={beam.gradientConfig.transition}
+          >
+            <GradientColors colors={gradientColors} />
+          </motion.linearGradient>
+        ))}
+      </defs>
+    </svg>
+  );
+};
+
+const GradientColors = ({ colors = {
+  start: "#18CCFC",
+  middle: "#6344F5",
+  end: "#AE48FF"
+} }) => {
+  return (
+    <>
+      <stop offset="0%" stopColor={colors.start} stopOpacity="0" />
+      <stop offset="20%" stopColor={colors.start} stopOpacity="1" />
+      <stop offset="50%" stopColor={colors.middle} stopOpacity="1" />
+      <stop offset="100%" stopColor={colors.end} stopOpacity="0" />
+    </>
+  );
+};
+
+demo.tsx
+"use client";
+
+import { PulseBeams } from "@/components/ui/pulse-beams";
+
+const beams = [
+  {
+    path: "M269 220.5H16.5C10.9772 220.5 6.5 224.977 6.5 230.5V398.5",
+    gradientConfig: {
+      initial: {
+        x1: "0%",
+        x2: "0%",
+        y1: "80%",
+        y2: "100%",
+      },
+      animate: {
+        x1: ["0%", "0%", "200%"],
+        x2: ["0%", "0%", "180%"],
+        y1: ["80%", "0%", "0%"],
+        y2: ["100%", "20%", "20%"],
+      },
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "loop",
+        ease: "linear",
+        repeatDelay: 2,
+        delay: Math.random() * 2,
+      },
+    },
+    connectionPoints: [
+      { cx: 6.5, cy: 398.5, r: 6 },
+      { cx: 269, cy: 220.5, r: 6 }
+    ]
+  },
+  {
+    path: "M568 200H841C846.523 200 851 195.523 851 190V40",
+    gradientConfig: {
+      initial: {
+        x1: "0%",
+        x2: "0%",
+        y1: "80%",
+        y2: "100%",
+      },
+      animate: {
+        x1: ["20%", "100%", "100%"],
+        x2: ["0%", "90%", "90%"],
+        y1: ["80%", "80%", "-20%"],
+        y2: ["100%", "100%", "0%"],
+      },
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "loop",
+        ease: "linear",
+        repeatDelay: 2,
+        delay: Math.random() * 2,
+      },
+    },
+    connectionPoints: [
+      { cx: 851, cy: 34, r: 6.5 },
+      { cx: 568, cy: 200, r: 6 }
+    ]
+  },
+  {
+    path: "M425.5 274V333C425.5 338.523 421.023 343 415.5 343H152C146.477 343 142 347.477 142 353V426.5",
+    gradientConfig: {
+      initial: {
+        x1: "0%",
+        x2: "0%",
+        y1: "80%",
+        y2: "100%",
+      },
+      animate: {
+        x1: ["20%", "100%", "100%"],
+        x2: ["0%", "90%", "90%"],
+        y1: ["80%", "80%", "-20%"],
+        y2: ["100%", "100%", "0%"],
+      },
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "loop",
+        ease: "linear",
+        repeatDelay: 2,
+        delay: Math.random() * 2,
+      },
+    },
+    connectionPoints: [
+      { cx: 142, cy: 427, r: 6.5 },
+      { cx: 425.5, cy: 274, r: 6 }
+    ]
+  },
+  {
+    path: "M493 274V333.226C493 338.749 497.477 343.226 503 343.226H760C765.523 343.226 770 347.703 770 353.226V427",
+    gradientConfig: {
+      initial: {
+        x1: "40%",
+        x2: "50%",
+        y1: "160%",
+        y2: "180%",
+      },
+      animate: {
+        x1: "0%",
+        x2: "10%",
+        y1: "-40%",
+        y2: "-20%",
+      },
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "loop",
+        ease: "linear",
+        repeatDelay: 2,
+        delay: Math.random() * 2,
+      },
+    },
+    connectionPoints: [
+      { cx: 770, cy: 427, r: 6.5 },
+      { cx: 493, cy: 274, r: 6 }
+    ]
+  },
+  {
+    path: "M380 168V17C380 11.4772 384.477 7 390 7H414",
+    gradientConfig: {
+      initial: {
+        x1: "-40%",
+        x2: "-10%",
+        y1: "0%",
+        y2: "20%",
+      },
+      animate: {
+        x1: ["40%", "0%", "0%"],
+        x2: ["10%", "0%", "0%"],
+        y1: ["0%", "0%", "180%"],
+        y2: ["20%", "20%", "200%"],
+      },
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "loop",
+        ease: "linear",
+        repeatDelay: 2,
+        delay: Math.random() * 2,
+      },
+    },
+    connectionPoints: [
+      { cx: 420.5, cy: 6.5, r: 6 },
+      { cx: 380, cy: 168, r: 6 }
+    ]
+  }
+];
+
+const gradientColors = {
+  start: "#18CCFC",
+  middle: "#6344F5",
+  end: "#AE48FF"
+};
+
+export const PulseBeamsFirstDemo = () => {
+  return (
+    <PulseBeams
+      beams={beams}
+      gradientColors={gradientColors}
+      className="bg-slate-950"
+    >
+      <button className="bg-slate-800 w-[320px] z-40 h-[120px] no-underline group cursor-pointer relative shadow-2xl shadow-zinc-900 rounded-full p-px text-xs font-semibold leading-6  text-white inline-block">
+        <span className="absolute inset-0 overflow-hidden rounded-full">
+          <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(56,189,248,0.6)_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        </span>
+        <div className="relative flex justify-center w-[320px] text-center space-x-2 h-[120px] items-center z-10 rounded-full bg-zinc-950 py-0.5 px-4 ring-1 ring-white/10 ">
+          <span className="md:text-4xl text-base inline-block bg-clip-text text-transparent bg-gradient-to-r from-neutral-300 via-neutral-600 to-neutral-300">
+            Connect
+          </span>
+        </div>
+      </button>
+    </PulseBeams>
+  );
+};
+```
+
+Install NPM dependencies:
+```bash
+framer-motion
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+orbiting-skills.tsx
+"use client"
+import React, { useEffect, useState, memo } from 'react';
+
+// --- Type Definitions ---
+type IconType = 'html' | 'css' | 'javascript' | 'react' | 'node' | 'tailwind';
+
+type GlowColor = 'cyan' | 'purple';
+
+interface SkillIconProps {
+  type: IconType;
+}
+
+interface SkillConfig {
+  id: string;
+  orbitRadius: number;
+  size: number;
+  speed: number;
+  iconType: IconType;
+  phaseShift: number;
+  glowColor: GlowColor;
+  label: string;
+}
+
+interface OrbitingSkillProps {
+  config: SkillConfig;
+  angle: number;
+}
+
+interface GlowingOrbitPathProps {
+  radius: number;
+  glowColor?: GlowColor;
+  animationDelay?: number;
+}
+
+// --- Improved SVG Icon Components ---
+const iconComponents: Record<IconType, { component: () => React.JSX.Element; color: string }> = {
+  html: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z" fill="#E34F26"/>
+      </svg>
+    ),
+    color: '#E34F26'
+  },
+  css: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.751L12 19.351l5.379-1.443.744-8.157z" fill="#1572B6"/>
+      </svg>
+    ),
+    color: '#1572B6'
+  },
+  javascript: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <rect width="24" height="24" fill="#F7DF1E"/>
+        <path d="M22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z" fill="#323330"/>
+      </svg>
+    ),
+    color: '#F7DF1E'
+  },
+  react: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+        <g stroke="#61DAFB" strokeWidth="1" fill="none">
+          <circle cx="12" cy="12" r="2.05" fill="#61DAFB"/>
+          <ellipse cx="12" cy="12" rx="11" ry="4.2"/>
+          <ellipse cx="12" cy="12" rx="11" ry="4.2" transform="rotate(60 12 12)"/>
+          <ellipse cx="12" cy="12" rx="11" ry="4.2" transform="rotate(120 12 12)"/>
+        </g>
+      </svg>
+    ),
+    color: '#61DAFB'
+  },
+  node: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M11.998 24c-.321 0-.641-.084-.922-.247l-2.936-1.737c-.438-.245-.224-.332-.08-.383.585-.203.703-.25 1.328-.602.065-.037.151-.023.218.017l2.256 1.339c.082.045.198.045.275 0l8.795-5.076c.082-.047.135-.141.135-.241V6.921c0-.103-.055-.198-.137-.246l-8.791-5.072c-.081-.047-.189-.047-.273 0L2.075 6.675c-.084.048-.139.144-.139.246v10.146c0 .1.055.194.139.241l2.409 1.392c1.307.654 2.108-.116 2.108-.89V7.787c0-.142.114-.253.256-.253h1.115c.139 0 .255.112.255.253v10.021c0 1.745-.95 2.745-2.604 2.745-.508 0-.909 0-2.026-.551L1.352 18.675C.533 18.215 0 17.352 0 16.43V6.284c0-.922.533-1.786 1.352-2.245L10.147-.963c.8-.452 1.866-.452 2.657 0l8.796 5.002c.819.459 1.352 1.323 1.352 2.245v10.146c0 .922-.533 1.783-1.352 2.245l-8.796 5.078c-.28.163-.601.247-.926.247zm2.717-6.993c-3.849 0-4.654-1.766-4.654-3.246 0-.14.114-.253.256-.253h1.136c.127 0 .232.091.252.215.173 1.164.686 1.752 3.01 1.752 1.852 0 2.639-.419 2.639-1.401 0-.566-.224-1.03-3.099-1.249-2.404-.184-3.89-.768-3.89-2.689 0-1.771 1.491-2.825 3.991-2.825 2.808 0 4.199.975 4.377 3.068.007.072-.019.141-.065.193-.047.049-.111.077-.178.077h-1.14c-.119 0-.225-.083-.248-.196-.276-1.224-.944-1.616-2.746-1.616-2.023 0-2.259.705-2.259 1.234 0 .641.278.827 3.006 1.19 2.7.359 3.982.866 3.982 2.771 0 1.922-1.603 3.024-4.399 3.024z" fill="#339933"/>
+      </svg>
+    ),
+    color: '#339933'
+  },
+  tailwind: {
+    component: () => (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+        <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z" fill="#06B6D4"/>
+      </svg>
+    ),
+    color: '#06B6D4'
+  }
+};
+
+// --- Memoized Icon Component ---
+const SkillIcon = memo(({ type }: SkillIconProps) => {
+  const IconComponent = iconComponents[type]?.component;
+  return IconComponent ? <IconComponent /> : null;
+});
+SkillIcon.displayName = 'SkillIcon';
+
+// --- Configuration for the Orbiting Skills ---
+const skillsConfig: SkillConfig[] = [
+  // Inner Orbit
+  { 
+    id: 'html',
+    orbitRadius: 100, 
+    size: 40, 
+    speed: 1, 
+    iconType: 'html', 
+    phaseShift: 0, 
+    glowColor: 'cyan',
+    label: 'HTML5'
+  },
+  { 
+    id: 'css',
+    orbitRadius: 100, 
+    size: 45, 
+    speed: 1, 
+    iconType: 'css', 
+    phaseShift: (2 * Math.PI) / 3, 
+    glowColor: 'cyan',
+    label: 'CSS3'
+  },
+  { 
+    id: 'javascript',
+    orbitRadius: 100, 
+    size: 40, 
+    speed: 1, 
+    iconType: 'javascript', 
+    phaseShift: (4 * Math.PI) / 3, 
+    glowColor: 'cyan',
+    label: 'JavaScript'
+  },
+  // Outer Orbit
+  { 
+    id: 'react',
+    orbitRadius: 180, 
+    size: 50, 
+    speed: -0.6, 
+    iconType: 'react', 
+    phaseShift: 0, 
+    glowColor: 'purple',
+    label: 'React'
+  },
+  { 
+    id: 'node',
+    orbitRadius: 180, 
+    size: 45, 
+    speed: -0.6, 
+    iconType: 'node', 
+    phaseShift: (2 * Math.PI) / 3, 
+    glowColor: 'purple',
+    label: 'Node.js'
+  },
+  { 
+    id: 'tailwind',
+    orbitRadius: 180, 
+    size: 40, 
+    speed: -0.6, 
+    iconType: 'tailwind', 
+    phaseShift: (4 * Math.PI) / 3, 
+    glowColor: 'purple',
+    label: 'Tailwind CSS'
+  },
+];
+
+// --- Memoized Orbiting Skill Component ---
+const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const { orbitRadius, size, iconType, label } = config;
+
+  const x = Math.cos(angle) * orbitRadius;
+  const y = Math.sin(angle) * orbitRadius;
+
+  return (
+    <div
+      className="absolute top-1/2 left-1/2 transition-all duration-300 ease-out"
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))`,
+        zIndex: isHovered ? 20 : 10,
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div
+        className={`
+          relative w-full h-full p-2 bg-gray-800/90 backdrop-blur-sm
+          rounded-full flex items-center justify-center
+          transition-all duration-300 cursor-pointer
+          ${isHovered ? 'scale-125 shadow-2xl' : 'shadow-lg hover:shadow-xl'}
+        `}
+        style={{
+          boxShadow: isHovered
+            ? `0 0 30px ${iconComponents[iconType]?.color}40, 0 0 60px ${iconComponents[iconType]?.color}20`
+            : undefined
+        }}
+      >
+        <SkillIcon type={iconType} />
+        {isHovered && (
+          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900/95 backdrop-blur-sm rounded text-xs text-white whitespace-nowrap pointer-events-none">
+            {label}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+OrbitingSkill.displayName = 'OrbitingSkill';
+
+// --- Optimized Orbit Path Component ---
+const GlowingOrbitPath = memo(({ radius, glowColor = 'cyan', animationDelay = 0 }: GlowingOrbitPathProps) => {
+  const glowColors = {
+    cyan: {
+      primary: 'rgba(6, 182, 212, 0.4)',
+      secondary: 'rgba(6, 182, 212, 0.2)',
+      border: 'rgba(6, 182, 212, 0.3)'
+    },
+    purple: {
+      primary: 'rgba(147, 51, 234, 0.4)',
+      secondary: 'rgba(147, 51, 234, 0.2)',
+      border: 'rgba(147, 51, 234, 0.3)'
+    }
+  };
+
+  const colors = glowColors[glowColor] || glowColors.cyan;
+
+  return (
+    <div
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+      style={{
+        width: `${radius * 2}px`,
+        height: `${radius * 2}px`,
+        animationDelay: `${animationDelay}s`,
+      }}
+    >
+      {/* Glowing background */}
+      <div
+        className="absolute inset-0 rounded-full animate-pulse"
+        style={{
+          background: `radial-gradient(circle, transparent 30%, ${colors.secondary} 70%, ${colors.primary} 100%)`,
+          boxShadow: `0 0 60px ${colors.primary}, inset 0 0 60px ${colors.secondary}`,
+          animation: 'pulse 4s ease-in-out infinite',
+          animationDelay: `${animationDelay}s`,
+        }}
+      />
+
+      {/* Static ring for depth */}
+      <div
+        className="absolute inset-0 rounded-full"
+        style={{
+          border: `1px solid ${colors.border}`,
+          boxShadow: `inset 0 0 20px ${colors.secondary}`,
+        }}
+      />
+    </div>
+  );
+});
+GlowingOrbitPath.displayName = 'GlowingOrbitPath';
+
+// --- Main App Component ---
+export default function OrbitingSkills() {
+  const [time, setTime] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+
+    let animationFrameId: number;
+    let lastTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const deltaTime = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
+
+      setTime(prevTime => prevTime + deltaTime);
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isPaused]);
+
+  const orbitConfigs: Array<{ radius: number; glowColor: GlowColor; delay: number }> = [
+    { radius: 100, glowColor: 'cyan', delay: 0 },
+    { radius: 180, glowColor: 'purple', delay: 1.5 }
+  ];
+
+  return (
+    <main className="w-full flex items-center justify-center overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div 
+          className="absolute inset-0" 
+          style={{
+            backgroundImage: `radial-gradient(circle at 25% 25%, #374151 0%, transparent 50%),
+                             radial-gradient(circle at 75% 75%, #4B5563 0%, transparent 50%)`,
+          }}
+        />
+      </div>
+
+      <div 
+        className="relative w-[calc(100vw-40px)] h-[calc(100vw-40px)] md:w-[450px] md:h-[450px] flex items-center justify-center"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        
+        {/* Central "Code" Icon with enhanced glow */}
+        <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center z-10 relative shadow-2xl">
+          <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
+          <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="relative z-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#06B6D4" />
+                  <stop offset="100%" stopColor="#9333EA" />
+                </linearGradient>
+              </defs>
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        {/* Render glowing orbit paths */}
+        {orbitConfigs.map((config) => (
+          <GlowingOrbitPath
+            key={`path-${config.radius}`}
+            radius={config.radius}
+            glowColor={config.glowColor}
+            animationDelay={config.delay}
+          />
+        ))}
+
+        {/* Render orbiting skill icons */}
+        {skillsConfig.map((config) => {
+          const angle = time * config.speed + (config.phaseShift || 0);
+          return (
+            <OrbitingSkill
+              key={config.id}
+              config={config}
+              angle={angle}
+            />
+          );
+        })}
+      </div>
+    </main>
+  );
+}
+
+demo.tsx
+import OrbitingSkills  from "@/components/ui/orbiting-skills";
+
+export default function DemoOne() {
+  return <OrbitingSkills />;
+}
+
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
+
+
+
+
+
+
+
+
+
+
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+tubelight-navbar.tsx
+"use client"
+
+import React, { useEffect, useState } from "react"
+import { motion } from "framer-motion"
+import Link from "next/link"
+import { LucideIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+
+interface NavItem {
+  name: string
+  url: string
+  icon: LucideIcon
+}
+
+interface NavBarProps {
+  items: NavItem[]
+  className?: string
+}
+
+export function NavBar({ items, className }: NavBarProps) {
+  const [activeTab, setActiveTab] = useState(items[0].name)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  return (
+    <div
+      className={cn(
+        "fixed bottom-0 sm:top-0 left-1/2 -translate-x-1/2 z-50 mb-6 sm:pt-6",
+        className,
+      )}
+    >
+      <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
+        {items.map((item) => {
+          const Icon = item.icon
+          const isActive = activeTab === item.name
+
+          return (
+            <Link
+              key={item.name}
+              href={item.url}
+              onClick={() => setActiveTab(item.name)}
+              className={cn(
+                "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
+                "text-foreground/80 hover:text-primary",
+                isActive && "bg-muted text-primary",
+              )}
+            >
+              <span className="hidden md:inline">{item.name}</span>
+              <span className="md:hidden">
+                <Icon size={18} strokeWidth={2.5} />
+              </span>
+              {isActive && (
+                <motion.div
+                  layoutId="lamp"
+                  className="absolute inset-0 w-full bg-primary/5 rounded-full -z-10"
+                  initial={false}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 30,
+                  }}
+                >
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-t-full">
+                    <div className="absolute w-12 h-6 bg-primary/20 rounded-full blur-md -top-2 -left-2" />
+                    <div className="absolute w-8 h-6 bg-primary/20 rounded-full blur-md -top-1" />
+                    <div className="absolute w-4 h-4 bg-primary/20 rounded-full blur-sm top-0 left-2" />
+                  </div>
+                </motion.div>
+              )}
+            </Link>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+
+demo.tsx
+import { Home, User, Briefcase, FileText } from 'lucide-react'
+import { NavBar } from "@/components/ui/tubelight-navbar"
+
+export function NavBarDemo() {
+  const navItems = [
+    { name: 'Home', url: '#', icon: Home },
+    { name: 'About', url: '#', icon: User },
+    { name: 'Projects', url: '#', icon: Briefcase },
+    { name: 'Resume', url: '#', icon: FileText }
+  ]
+
+  return <NavBar items={navItems} />
+}
+```
+
+Install NPM dependencies:
+```bash
+lucide-react, framer-motion
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+flip-card.tsx
+'use client';
+
+import { cn } from '@/lib/utils';
+import { ArrowRight, Code2, Copy, Rocket, Zap } from 'lucide-react';
+import { useState } from 'react';
+
+export interface CardFlipProps {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  features?: string[];
+  color?: string;
+}
+
+export default function CardFlip({
+  title = 'Build MVPs Fast',
+  subtitle = 'Launch your idea in record time',
+  description = 'Copy, paste, customize—and launch your MVP faster than ever with our developer-first component library.',
+  features = [
+    'Copy & Paste Ready',
+    'Developer-First',
+    'MVP Optimized',
+    'Zero Setup Required',
+  ],
+  color = '#ff2e88'
+}: CardFlipProps) {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <div
+      style={{
+        ['--primary' as any]: color ?? '#2563eb',
+      }}
+      className="group relative h-[360px] w-full max-w-[300px] [perspective:2000px]"
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
+    >
+      <div
+        className={cn(
+          'relative h-full w-full',
+          '[transform-style:preserve-3d]',
+          'transition-all duration-700',
+          isFlipped
+            ? '[transform:rotateY(180deg)]'
+            : '[transform:rotateY(0deg)]',
+        )}
+      >
+        {/* Front of card */}
+        <div
+          className={cn(
+            'absolute inset-0 h-full w-full',
+            '[transform:rotateY(0deg)] [backface-visibility:hidden]',
+            'overflow-hidden rounded-2xl',
+            'bg-gradient-to-br from-white via-slate-50 to-slate-100',
+            'dark:from-zinc-900 dark:via-zinc-900/95 dark:to-zinc-800',
+            'border border-slate-200 dark:border-zinc-800/50',
+            'shadow-lg dark:shadow-xl',
+            'transition-all duration-700',
+            'group-hover:shadow-xl dark:group-hover:shadow-2xl',
+            'group-hover:border-primary/20 dark:group-hover:border-primary/30',
+            isFlipped ? 'opacity-0' : 'opacity-100',
+          )}
+        >
+          {/* Background gradient effect */}
+          <div className="from-primary/5 dark:from-primary/10 absolute inset-0 bg-gradient-to-br via-transparent to-blue-500/5 dark:to-blue-500/10" />
+
+          {/* Animated code blocks */}
+          <div className="absolute inset-0 flex items-center justify-center pt-20">
+            <div className="relative flex h-[100px] w-[200px] flex-col items-center justify-center gap-2">
+              {/* Code blocks animation */}
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    'h-3 w-full rounded-sm',
+                    'from-primary/20 via-primary/30 to-primary/20 bg-gradient-to-r',
+                    'animate-[slideIn_2s_ease-in-out_infinite]',
+                    'opacity-0',
+                  )}
+                  style={{
+                    width: `${60 + Math.random() * 40}%`,
+                    animationDelay: `${i * 0.2}s`,
+                    marginLeft: `${Math.random() * 20}%`,
+                  }}
+                />
+              ))}
+
+              {/* Central rocket icon */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div
+                  className={cn(
+                    'h-12 w-12 rounded-xl',
+                    'from-primary via-primary/90 to-primary/80 bg-gradient-to-br',
+                    'flex items-center justify-center',
+                    'shadow-primary/25 shadow-lg',
+                    'animate-pulse',
+                    'transition-all duration-500 group-hover:scale-110 group-hover:rotate-12',
+                  )}
+                >
+                  <Rocket className="h-6 w-6 text-white" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom content */}
+          <div className="absolute right-0 bottom-0 left-0 p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="space-y-1.5">
+                <h3 className="text-lg leading-snug font-semibold tracking-tight text-zinc-900 transition-all duration-500 ease-out group-hover:translate-y-[-4px] dark:text-white">
+                  {title}
+                </h3>
+                <p className="line-clamp-2 text-sm tracking-tight text-zinc-600 transition-all delay-[50ms] duration-500 ease-out group-hover:translate-y-[-4px] dark:text-zinc-300">
+                  {subtitle}
+                </p>
+              </div>
+              <div className="group/icon relative">
+                <div
+                  className={cn(
+                    'absolute inset-[-8px] rounded-lg transition-opacity duration-300',
+                    'from-primary/20 via-primary/10 bg-gradient-to-br to-transparent',
+                    'opacity-0 group-hover/icon:opacity-100',
+                  )}
+                />
+                <Zap className="text-primary relative z-10 h-5 w-5 transition-all duration-300 group-hover/icon:scale-110 group-hover/icon:rotate-12" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Back of card */}
+        <div
+          className={cn(
+            'absolute inset-0 h-full w-full',
+            '[transform:rotateY(180deg)] [backface-visibility:hidden]',
+            'rounded-2xl p-5',
+            'bg-gradient-to-br from-white via-slate-50 to-slate-100',
+            'dark:from-zinc-900 dark:via-zinc-900/95 dark:to-zinc-800',
+            'border border-slate-200 dark:border-zinc-800',
+            'shadow-lg dark:shadow-xl',
+            'flex flex-col',
+            'transition-all duration-700',
+            'group-hover:shadow-xl dark:group-hover:shadow-2xl',
+            'group-hover:border-primary/20 dark:group-hover:border-primary/30',
+            !isFlipped ? 'opacity-0' : 'opacity-100',
+          )}
+        >
+          {/* Background gradient */}
+          <div className="from-primary/5 dark:from-primary/10 absolute inset-0 rounded-2xl bg-gradient-to-br via-transparent to-blue-500/5 dark:to-blue-500/10" />
+
+          <div className="relative z-10 flex-1 space-y-5">
+            <div className="space-y-2">
+              <div className="mb-2 flex items-center gap-2">
+                <div className="from-primary via-primary/90 to-primary/80 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br">
+                  <Code2 className="h-4 w-4 text-white" />
+                </div>
+                <h3 className="text-lg leading-snug font-semibold tracking-tight text-zinc-900 transition-all duration-500 ease-out group-hover:translate-y-[-2px] dark:text-white">
+                  {title}
+                </h3>
+              </div>
+              <p className="line-clamp-2 text-sm tracking-tight text-zinc-600 transition-all duration-500 ease-out group-hover:translate-y-[-2px] dark:text-zinc-400">
+                {description}
+              </p>
+            </div>
+
+            <div className="space-y-2.5">
+              {features.map((feature, index) => {
+                const icons = [Copy, Code2, Rocket, Zap];
+                const IconComponent = icons[index % icons.length];
+
+                return (
+                  <div
+                    key={feature}
+                    className="flex items-center gap-3 text-sm text-zinc-700 transition-all duration-500 dark:text-zinc-300"
+                    style={{
+                      transform: isFlipped
+                        ? 'translateX(0)'
+                        : 'translateX(-10px)',
+                      opacity: isFlipped ? 1 : 0,
+                      transitionDelay: `${index * 100 + 200}ms`,
+                    }}
+                  >
+                    <div className="bg-primary/10 dark:bg-primary/20 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md">
+                      <IconComponent className="text-primary h-3 w-3" />
+                    </div>
+                    <span className="font-medium">{feature}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="relative z-10 mt-auto border-t border-slate-200 pt-4 dark:border-zinc-800">
+            <div
+              className={cn(
+                'group/start relative',
+                'flex items-center justify-between',
+                'rounded-lg p-2.5',
+                'transition-all duration-300',
+                'bg-gradient-to-r from-slate-100 via-slate-100 to-slate-100',
+                'dark:from-zinc-800 dark:via-zinc-800 dark:to-zinc-800',
+                'hover:from-primary/10 hover:via-primary/5 hover:to-transparent',
+                'dark:hover:from-primary/20 dark:hover:via-primary/10 dark:hover:to-transparent',
+                'hover:scale-[1.02] hover:cursor-pointer',
+                'hover:border-primary/20 border border-transparent',
+              )}
+            >
+              <span className="group-hover/start:text-primary text-sm font-semibold text-zinc-900 transition-colors duration-300 dark:text-white">
+                Start Building
+              </span>
+              <div className="group/icon relative">
+                <div
+                  className={cn(
+                    'absolute inset-[-6px] rounded-lg transition-all duration-300',
+                    'from-primary/20 via-primary/10 bg-gradient-to-br to-transparent',
+                    'scale-90 opacity-0 group-hover/start:scale-100 group-hover/start:opacity-100',
+                  )}
+                />
+                <ArrowRight className="text-primary relative z-10 h-4 w-4 transition-all duration-300 group-hover/start:translate-x-1 group-hover/start:scale-110" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes slideIn {
+          0% {
+            transform: translateX(-100px);
+            opacity: 0;
+          }
+          50% {
+            transform: translateX(0);
+            opacity: 0.8;
+          }
+          100% {
+            transform: translateX(100px);
+            opacity: 0;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+
+demo.tsx
+import CardFlip from "@/components/ui/flip-card";
+
+export default function DemoOne() {
+  return <CardFlip />;
+}
+
+```
+
+Install NPM dependencies:
+```bash
+lucide-react
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them
