@@ -12,6 +12,20 @@
   --accent-cyan: #06B6D4;
   --muted: rgba(255, 255, 255, 0.4);
   --border: rgba(255, 255, 255, 0.08);
+
+  /* shadcn compat */
+  --primary: 230 80% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 270 70% 55%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 230 80% 60%;
+  --accent-foreground: 0 0% 100%;
+  --muted-foreground: 0 0% 70%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 0 0% 15%;
+  --ring: 230 80% 60%;
+  --radius: 0.5rem;
 }
 
 * {

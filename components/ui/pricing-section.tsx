@@ -1,157 +1,228 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Check } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { Check, Star } from "lucide-react";
+import Link from "next/link";
+import { useState, useRef } from "react";
+import confetti from "canvas-confetti";
+import NumberFlow from "@number-flow/react";
 
 interface PricingPlan {
   name: string;
-  projectPrice: string;
-  retainerPrice: string;
-  description: string;
+  price: string;
+  yearlyPrice: string;
+  period: string;
   features: string[];
-  popular?: boolean;
-  color: string;
+  description: string;
+  buttonText: string;
+  href: string;
+  isPopular: boolean;
 }
 
-const plans: PricingPlan[] = [
-  {
-    name: "Launch",
-    projectPrice: "2.400",
-    retainerPrice: "490",
-    description: "Perfect for startups and small brands looking to make their first digital impression.",
-    features: [
-      "1 Design Sprint (5 days)",
-      "Up to 5 pages",
-      "Responsive Build",
-      "2 Revision Rounds",
-      "Basic SEO Setup",
-      "1 Month Support",
-    ],
-    color: "#3ca2fa",
-  },
-  {
-    name: "Scale",
-    projectPrice: "6.800",
-    retainerPrice: "1.290",
-    description: "For growing brands that need a full digital experience with custom interactions.",
-    features: [
-      "2 Design Sprints",
-      "Up to 15 pages",
-      "Custom Animations",
-      "CMS Integration",
-      "Performance Monitoring",
-      "3 Months Support",
-      "A/B Testing Setup",
-    ],
-    popular: true,
-    color: "#9333EA",
-  },
-  {
-    name: "Enterprise",
-    projectPrice: "14.000+",
-    retainerPrice: "2.490",
-    description: "Full-scale digital transformation for established brands demanding excellence.",
-    features: [
-      "Unlimited Design Sprints",
-      "Unlimited Pages",
-      "3D / WebGL Experiences",
-      "Headless CMS",
-      "CI/CD Pipeline",
-      "Dedicated Team",
-      "24/7 Priority Support",
-      "Quarterly Strategy Reviews",
-    ],
-    color: "#06B6D4",
-  },
-];
+interface PricingProps {
+  plans: PricingPlan[];
+  title?: string;
+  description?: string;
+}
 
-export function PricingSection() {
-  const [isRetainer, setIsRetainer] = useState(false);
+export function Pricing({
+  plans,
+  title = "Transparent Pricing",
+  description = "Choose the model that fits your ambition.\nEvery plan includes strategy, design, and development.",
+}: PricingProps) {
+  const [isMonthly, setIsMonthly] = useState(true);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const switchRef = useRef<HTMLButtonElement>(null);
+
+  const handleToggle = (checked: boolean) => {
+    setIsMonthly(!checked);
+    if (checked && switchRef.current) {
+      const rect = switchRef.current.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: {
+          x: x / window.innerWidth,
+          y: y / window.innerHeight,
+        },
+        colors: ["#3ca2fa", "#9333EA", "#06B6D4", "#f5f5f7"],
+        ticks: 200,
+        gravity: 1.2,
+        decay: 0.94,
+        startVelocity: 30,
+        shapes: ["circle"],
+      });
+    }
+  };
 
   return (
-    <div className="w-full">
-      {/* Toggle */}
-      <div className="flex items-center justify-center gap-4 mb-16">
+    <div className="w-full py-10">
+      <div className="text-center space-y-4 mb-12">
+        <h2 className="font-display text-5xl md:text-7xl font-light tracking-tight text-white">
+          {title}
+        </h2>
+        <p className="text-white/40 text-lg whitespace-pre-line max-w-xl mx-auto">
+          {description}
+        </p>
+      </div>
+
+      <div className="flex justify-center items-center gap-3 mb-14">
         <span
-          className={`font-mono-dm text-sm transition-colors ${!isRetainer ? "text-white" : "text-white/40"}`}
+          className={cn(
+            "font-mono-dm text-sm transition-colors",
+            isMonthly ? "text-white" : "text-white/40"
+          )}
         >
           Projekt
         </span>
-        <button
-          onClick={() => setIsRetainer(!isRetainer)}
-          className="relative w-14 h-7 rounded-full border border-white/[0.08] bg-white/5 transition-colors"
-        >
-          <motion.div
-            className="absolute top-0.5 w-6 h-6 rounded-full bg-vanta-blue"
-            animate={{ left: isRetainer ? "calc(100% - 1.625rem)" : "0.125rem" }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          />
-        </button>
+        <label className="relative inline-flex items-center cursor-pointer">
+          <Label>
+            <Switch
+              ref={switchRef as React.Ref<HTMLButtonElement>}
+              checked={!isMonthly}
+              onCheckedChange={handleToggle}
+              className="data-[state=checked]:bg-vanta-purple data-[state=unchecked]:bg-white/10 border-white/[0.08]"
+            />
+          </Label>
+        </label>
         <span
-          className={`font-mono-dm text-sm transition-colors ${isRetainer ? "text-white" : "text-white/40"}`}
+          className={cn(
+            "font-mono-dm text-sm transition-colors",
+            !isMonthly ? "text-white" : "text-white/40"
+          )}
         >
-          Retainer
+          Retainer{" "}
+          <span className="text-vanta-purple text-xs">(Save 20%)</span>
         </span>
       </div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {plans.map((plan) => (
-          <div
-            key={plan.name}
-            className={`relative rounded-2xl border p-8 flex flex-col ${
-              plan.popular
-                ? "border-vanta-purple/40 bg-vanta-purple/[0.03]"
-                : "border-white/[0.08] bg-white/[0.02]"
-            }`}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {plans.map((plan, index) => (
+          <motion.div
+            key={index}
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={
+              isDesktop
+                ? {
+                    y: plan.isPopular ? -20 : 0,
+                    opacity: 1,
+                    x: index === 2 ? -30 : index === 0 ? 30 : 0,
+                    scale: index === 0 || index === 2 ? 0.94 : 1.0,
+                  }
+                : { y: 0, opacity: 1 }
+            }
+            viewport={{ once: true }}
+            transition={{
+              duration: 1.6,
+              type: "spring",
+              stiffness: 100,
+              damping: 30,
+              delay: 0.4,
+              opacity: { duration: 0.5 },
+            }}
+            className={cn(
+              "rounded-2xl border p-6 text-center lg:flex lg:flex-col lg:justify-center relative",
+              "bg-[#030305] flex flex-col",
+              plan.isPopular
+                ? "border-vanta-purple/60 border-2"
+                : "border-white/[0.08]",
+              !plan.isPopular && "mt-5",
+              index === 0 || index === 2 ? "z-0" : "z-10",
+              index === 0 && "origin-right",
+              index === 2 && "origin-left"
+            )}
           >
-            {plan.popular && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-vanta-purple text-white text-xs font-mono-dm tracking-wider">
-                POPULAR
+            {plan.isPopular && (
+              <div className="absolute top-0 right-0 bg-vanta-purple py-0.5 px-3 rounded-bl-xl rounded-tr-xl flex items-center">
+                <Star className="text-white h-3.5 w-3.5 fill-current" />
+                <span className="text-white ml-1 font-mono-dm text-xs tracking-wider">
+                  Popular
+                </span>
               </div>
             )}
-
-            <div className="mb-6">
-              <h3 className="font-display text-2xl font-light text-white mb-2">{plan.name}</h3>
-              <p className="text-white/40 text-sm">{plan.description}</p>
-            </div>
-
-            <div className="mb-8">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={isRetainer ? "retainer" : "project"}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <span className="font-display text-5xl font-light" style={{ color: plan.color }}>
-                    &euro;{isRetainer ? plan.retainerPrice : plan.projectPrice}
+            <div className="flex-1 flex flex-col">
+              <p className="font-mono-dm text-xs uppercase tracking-[0.2em] text-white/50">
+                {plan.name}
+              </p>
+              <div className="mt-6 flex items-center justify-center gap-x-2">
+                <span className="font-display text-5xl font-light tracking-tight text-white">
+                  <NumberFlow
+                    value={
+                      isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
+                    }
+                    format={{
+                      style: "currency",
+                      currency: "EUR",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    }}
+                    transformTiming={{
+                      duration: 500,
+                      easing: "ease-out",
+                    }}
+                    willChange
+                    className="font-variant-numeric: tabular-nums"
+                  />
+                </span>
+                {plan.period !== "Next 3 months" && (
+                  <span className="text-sm font-mono-dm leading-6 tracking-wide text-white/40">
+                    / {plan.period}
                   </span>
-                  <span className="text-white/40 text-sm ml-2">
-                    {isRetainer ? "/mo" : "/Projekt"}
-                  </span>
-                </motion.div>
-              </AnimatePresence>
+                )}
+              </div>
+
+              <p className="text-xs leading-5 text-white/30 mt-1">
+                {isMonthly ? "per project" : "billed monthly"}
+              </p>
+
+              <ul className="mt-6 gap-2.5 flex flex-col">
+                {plan.features.map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5">
+                    <Check
+                      className={cn(
+                        "h-4 w-4 mt-0.5 flex-shrink-0",
+                        plan.isPopular
+                          ? "text-vanta-purple"
+                          : index === 0
+                          ? "text-vanta-blue"
+                          : "text-vanta-cyan"
+                      )}
+                    />
+                    <span className="text-left text-sm text-white/60">
+                      {feature}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <hr className="w-full my-5 border-white/[0.06]" />
+
+              <Link
+                href={plan.href}
+                className={cn(
+                  "group relative w-full gap-2 overflow-hidden text-sm font-mono-dm tracking-wider",
+                  "inline-flex items-center justify-center rounded-full h-11 px-6",
+                  "transform-gpu ring-offset-current transition-all duration-300 ease-out",
+                  "hover:ring-2 hover:ring-offset-1",
+                  plan.isPopular
+                    ? "bg-vanta-purple text-white hover:ring-vanta-purple"
+                    : "border border-white/[0.12] text-white/70 hover:text-white hover:bg-white/5 hover:ring-white/20"
+                )}
+              >
+                {plan.buttonText}
+              </Link>
+              <p className="mt-5 text-xs leading-5 text-white/30">
+                {plan.description}
+              </p>
             </div>
-
-            <ul className="space-y-3 flex-1">
-              {plan.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-3 text-sm text-white/60">
-                  <Check size={16} className="flex-shrink-0 mt-0.5" style={{ color: plan.color }} />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-
-            <button
-              className="mt-8 w-full py-3 rounded-full border text-sm font-mono-dm tracking-wider transition-all hover:bg-white/5"
-              style={{ borderColor: `${plan.color}40`, color: plan.color }}
-            >
-              GET STARTED
-            </button>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

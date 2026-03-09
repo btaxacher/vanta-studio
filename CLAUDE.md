@@ -93,40 +93,46 @@ Wenn die Keywords nicht fallen: nicht von selbst aktiv werden oder lange Tool-Au
 
 ---
 
-## Commands (bitte projekt-spezifisch ergänzen)
-> Wenn noch leer: schlage passende Commands vor und trage sie ein.
+## Commands
 
-- Install: `...`
-- Dev: `...`
-- Build: `...`
-- Lint: `...`
-- Typecheck: `...`
-- Test: `...`
-- Deploy: `...` (z.B. Vercel)
+- Install: `npm install`
+- Dev: `npm run dev`
+- Build: `npm run build`
+- Lint: `npm run lint`
+- Deploy: `vercel --prod`
 
 ---
 
-## Architektur (kurz halten)
-- Frontend: ...
-- Backend/API: ...
-- DB/Auth: ...
-- Wichtige Pfade: `src/...`, `app/...`, `pages/...`, `components/...`, `lib/...`
+## Architektur
+
+- Frontend: Next.js 14 (App Router), TypeScript, Tailwind CSS v3
+- Animations: Framer Motion, Three.js (GLSL Hills)
+- UI Components: Custom + adaptiert von 21st.dev Vorlagen (`components/ui/`)
+- Sections: `components/sections/` (Hero, Services, Process, Stack, Pricing, Footer)
+- Utilities: `lib/utils.ts` (cn helper)
+- Deployment: Vercel (vanta-studio-rho.vercel.app)
+- Repo: github.com/btaxacher/vanta-studio
 
 ---
 
 ## Status & TODO (immer aktuell halten)
 ### Aktueller Stand
-- (1–3 Bullets: was gerade wahr ist)
+
+- Landing Page komplett gebaut und deployed (Vercel + GitHub)
+- Build laeuft sauber durch, keine TS-Fehler
+- 21st.dev Component-Vorlagen liegen in `21stdevcomponents/prompts.txt`
 
 ### TODO (priorisiert)
-- 🔴 Next: ...
-- 🟡 Soon: ...
-- ✅ Done: (max 3 aktuelle Einträge, alte löschen)
 
-### Next Steps (für Session-Resume)
-1) Öffne `...` und ändere `...`
-2) Führe `...` aus und prüfe `...`
-3) Danach: ...
+- 🟡 Soon: Visuelles Fine-Tuning (Farben, Spacing, mobile Responsive)
+- 🟡 Soon: Interaktive Features (Search Bar Logik, Kontaktformular)
+- 🟡 Soon: SEO + Performance Optimierung (Lighthouse)
+
+### Next Steps (fuer Session-Resume)
+
+1) `npm run dev` starten und visuell alle Sections durchgehen
+2) Mobile Breakpoints pruefen (besonders FlipCards, OrbitingSkills)
+3) Optional: Fonts via `next/font` statt Google Fonts CDN laden
 
 ---
 

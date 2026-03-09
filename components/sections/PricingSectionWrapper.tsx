@@ -2,7 +2,67 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { PricingSection } from "@/components/ui/pricing-section";
+import { Pricing } from "@/components/ui/pricing-section";
+
+const vantaPlans = [
+  {
+    name: "LAUNCH",
+    price: "2400",
+    yearlyPrice: "490",
+    period: "Projekt",
+    features: [
+      "1 Design Sprint (5 days)",
+      "Up to 5 pages",
+      "Responsive Build",
+      "2 Revision Rounds",
+      "Basic SEO Setup",
+      "1 Month Support",
+    ],
+    description: "Perfect for startups and small brands making their first digital impression.",
+    buttonText: "GET STARTED",
+    href: "#",
+    isPopular: false,
+  },
+  {
+    name: "SCALE",
+    price: "6800",
+    yearlyPrice: "1290",
+    period: "Projekt",
+    features: [
+      "2 Design Sprints",
+      "Up to 15 pages",
+      "Custom Animations",
+      "CMS Integration",
+      "Performance Monitoring",
+      "3 Months Support",
+      "A/B Testing Setup",
+    ],
+    description: "For growing brands that need a full digital experience with custom interactions.",
+    buttonText: "GET STARTED",
+    href: "#",
+    isPopular: true,
+  },
+  {
+    name: "ENTERPRISE",
+    price: "14000",
+    yearlyPrice: "2490",
+    period: "Projekt",
+    features: [
+      "Unlimited Design Sprints",
+      "Unlimited Pages",
+      "3D / WebGL Experiences",
+      "Headless CMS",
+      "CI/CD Pipeline",
+      "Dedicated Team",
+      "24/7 Priority Support",
+      "Quarterly Strategy Reviews",
+    ],
+    description: "Full-scale digital transformation for established brands demanding excellence.",
+    buttonText: "CONTACT SALES",
+    href: "#",
+    isPopular: false,
+  },
+];
 
 export function PricingSectionWrapper() {
   return (
@@ -18,12 +78,6 @@ export function PricingSectionWrapper() {
           <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue block mb-4">
             INVESTMENT
           </span>
-          <h2 className="font-display text-5xl md:text-7xl font-light mb-4">
-            Transparent Pricing
-          </h2>
-          <p className="text-white/40 text-lg max-w-xl mx-auto">
-            Choose the model that fits your ambition. Every plan includes strategy, design, and development.
-          </p>
         </motion.div>
 
         <motion.div
@@ -32,7 +86,7 @@ export function PricingSectionWrapper() {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <PricingSection />
+          <Pricing plans={vantaPlans} />
         </motion.div>
       </div>
 
