@@ -6,8 +6,12 @@ import { OrbitingSkills } from "@/components/ui/orbiting-skills";
 
 const features = [
   {
+    title: "Claude Code & AI-Integration",
+    text: "Claude Code, Anthropic API und AI-gestützte Entwicklung direkt in Ihrem Unternehmen. Wir integrieren AI in bestehende Prozesse — von der Code-Automatisierung bis zur intelligenten Entscheidungsfindung.",
+  },
+  {
     title: "AI & Machine Learning",
-    text: "OpenAI, Anthropic, LangChain und eigene Modelle. Wir setzen die richtige AI für jedes Problem ein — von Textverarbeitung bis Entscheidungslogik.",
+    text: "Anthropic Claude, LangChain und spezialisierte Modelle. Wir wählen die richtige AI für Ihr Problem — Text, Analyse, Agents oder individuelle Lösungen.",
   },
   {
     title: "Automatisierung & Integration",
@@ -15,7 +19,7 @@ const features = [
   },
   {
     title: "Cloud & Infrastruktur",
-    text: "AWS, Azure, Docker, PostgreSQL — skalierbare Architektur, die mitwächst. Von der ersten Automatisierung bis zum Enterprise-System.",
+    text: "Azure, Supabase, Docker, Git — skalierbare Architektur mit modernem Stack. Von der ersten Automatisierung bis zum Enterprise-System.",
   },
 ];
 
