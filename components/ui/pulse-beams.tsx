@@ -39,27 +39,27 @@ const defaultBeams: BeamPath[] = [
   {
     path: "M100 350C150 200 300 200 400 220C500 240 600 100 758 100",
     gradientConfig: {
-      initial: { x1: "0%", x2: "0%", y1: "0%", y2: "0%" },
-      animate: { x1: ["0%", "100%"], x2: ["0%", "90%"], y1: ["0%", "100%"], y2: ["0%", "110%"] },
-      transition: { duration: 3, repeat: Infinity, repeatType: "loop", ease: "linear", repeatDelay: 1, delay: 0 },
+      initial: { x1: "-10%", x2: "-20%", y1: "-10%", y2: "-20%" },
+      animate: { x1: ["-10%", "120%"], x2: ["-20%", "110%"], y1: ["-10%", "120%"], y2: ["-20%", "110%"] },
+      transition: { duration: 3, repeat: Infinity, repeatType: "loop", ease: "linear", repeatDelay: 0, delay: 0 },
     },
     connectionPoints: [{ cx: 100, cy: 350, r: 4 }, { cx: 758, cy: 100, r: 4 }],
   },
   {
     path: "M100 100C200 250 400 300 500 250C600 200 700 300 758 350",
     gradientConfig: {
-      initial: { x1: "0%", x2: "0%", y1: "0%", y2: "0%" },
-      animate: { x1: ["0%", "100%"], x2: ["0%", "90%"], y1: ["0%", "100%"], y2: ["0%", "110%"] },
-      transition: { duration: 4, repeat: Infinity, repeatType: "loop", ease: "linear", repeatDelay: 2, delay: 1 },
+      initial: { x1: "-10%", x2: "-20%", y1: "-10%", y2: "-20%" },
+      animate: { x1: ["-10%", "120%"], x2: ["-20%", "110%"], y1: ["-10%", "120%"], y2: ["-20%", "110%"] },
+      transition: { duration: 4, repeat: Infinity, repeatType: "loop", ease: "linear", repeatDelay: 0, delay: 1 },
     },
     connectionPoints: [{ cx: 100, cy: 100, r: 4 }, { cx: 758, cy: 350, r: 4 }],
   },
   {
     path: "M100 220C250 100 500 350 758 220",
     gradientConfig: {
-      initial: { x1: "0%", x2: "0%", y1: "0%", y2: "0%" },
-      animate: { x1: ["0%", "100%"], x2: ["0%", "90%"], y1: ["0%", "100%"], y2: ["0%", "110%"] },
-      transition: { duration: 3.5, repeat: Infinity, repeatType: "loop", ease: "linear", repeatDelay: 1.5, delay: 0.5 },
+      initial: { x1: "-10%", x2: "-20%", y1: "-10%", y2: "-20%" },
+      animate: { x1: ["-10%", "120%"], x2: ["-20%", "110%"], y1: ["-10%", "120%"], y2: ["-20%", "110%"] },
+      transition: { duration: 3.5, repeat: Infinity, repeatType: "loop", ease: "linear", repeatDelay: 0, delay: 0.5 },
     },
     connectionPoints: [{ cx: 100, cy: 220, r: 4 }, { cx: 758, cy: 220, r: 4 }],
   },
