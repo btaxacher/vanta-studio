@@ -41,7 +41,7 @@ const SearchComponent = () => {
         </div>
 
         <div id="main" className="relative group">
-          <input placeholder="Tell us about your project..." type="text" name="text" className="bg-[#030305] border-none w-[301px] h-[56px] rounded-lg text-[#f5f5f7] px-[59px] text-lg focus:outline-none placeholder-gray-500" />
+          <input placeholder="Beschreiben Sie Ihr Problem..." type="text" name="text" className="bg-[#030305] border-none w-[301px] h-[56px] rounded-lg text-[#f5f5f7] px-[59px] text-lg focus:outline-none placeholder-gray-500" />
           <div id="input-mask" className="pointer-events-none w-[100px] h-[20px] absolute bg-gradient-to-r from-transparent to-[#030305] top-[18px] left-[70px] group-focus-within:hidden"></div>
           <div id="pink-mask" className="pointer-events-none w-[30px] h-[20px] absolute bg-[#9333EA] top-[10px] left-[5px] blur-2xl opacity-80 transition-all duration-2000 group-hover:opacity-0"></div>
           <div className="absolute h-[42px] w-[40px] overflow-hidden top-[7px] right-[7px] rounded-lg

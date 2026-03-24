@@ -3,18 +3,18 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { PulseBeams } from "@/components/ui/pulse-beams";
-import { DiscoverIcon, DesignIcon, BuildIcon, LaunchIcon } from "@/components/ui/animated-state-icons";
+import { AnalyseIcon, KonzeptIcon, EntwicklungIcon, IntegrationIcon } from "@/components/ui/animated-state-icons";
 
 const steps = [
-  { num: "01", label: "Discover", position: "top-8 left-8 md:top-12 md:left-12", Icon: DiscoverIcon, color: "#3ca2fa" },
-  { num: "02", label: "Design", position: "top-8 right-8 md:top-12 md:right-12", Icon: DesignIcon, color: "#9333EA" },
-  { num: "03", label: "Build", position: "bottom-8 left-8 md:bottom-12 md:left-12", Icon: BuildIcon, color: "#06B6D4" },
-  { num: "04", label: "Launch", position: "bottom-8 right-8 md:bottom-12 md:right-12", Icon: LaunchIcon, color: "#3ca2fa" },
+  { num: "01", label: "Analyse", position: "top-8 left-8 md:top-12 md:left-12", Icon: AnalyseIcon, color: "#3ca2fa" },
+  { num: "02", label: "Konzept", position: "top-8 right-8 md:top-12 md:right-12", Icon: KonzeptIcon, color: "#9333EA" },
+  { num: "03", label: "Entwicklung", position: "bottom-8 left-8 md:bottom-12 md:left-12", Icon: EntwicklungIcon, color: "#06B6D4" },
+  { num: "04", label: "Integration", position: "bottom-8 right-8 md:bottom-12 md:right-12", Icon: IntegrationIcon, color: "#3ca2fa" },
 ];
 
 export function ProcessSection() {
   return (
-    <section id="process" className="relative py-32 px-6">
+    <section id="prozess" className="relative py-32 px-6">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -23,9 +23,9 @@ export function ProcessSection() {
         className="text-center mb-8"
       >
         <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue block mb-4">
-          HOW WE WORK
+          SO ARBEITEN WIR
         </span>
-        <h2 className="font-display text-5xl md:text-7xl font-light">Our Process</h2>
+        <h2 className="font-display text-5xl md:text-7xl font-light">Unser Prozess</h2>
       </motion.div>
 
       <div className="max-w-5xl mx-auto relative" style={{ minHeight: "500px" }}>

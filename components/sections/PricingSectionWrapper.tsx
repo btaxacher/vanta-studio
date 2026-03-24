@@ -6,67 +6,67 @@ import { Pricing } from "@/components/ui/pricing-section";
 
 const vantaPlans = [
   {
-    name: "LAUNCH",
-    price: "2400",
-    yearlyPrice: "490",
+    name: "AUTOMATE",
+    price: "990",
+    yearlyPrice: "190",
     period: "Projekt",
     features: [
-      "1 Design Sprint (5 days)",
-      "Up to 5 pages",
-      "Responsive Build",
-      "2 Revision Rounds",
-      "Basic SEO Setup",
-      "1 Month Support",
+      "Einzelne Prozessautomatisierung",
+      "Einfache AI-Workflows",
+      "Tool-Anbindung (1 System)",
+      "Datenverarbeitung",
+      "2 Revisionsrunden",
+      "1 Monat Support",
     ],
-    description: "Perfect for startups and small brands making their first digital impression.",
-    buttonText: "GET STARTED",
-    href: "#",
+    description: "Der schnelle Einstieg in die Automatisierung. Ideal für einzelne Prozesse und erste AI-Workflows.",
+    buttonText: "JETZT STARTEN",
+    href: "#kontakt",
     isPopular: false,
   },
   {
     name: "SCALE",
-    price: "6800",
-    yearlyPrice: "1290",
+    price: "2900",
+    yearlyPrice: "490",
     period: "Projekt",
     features: [
-      "2 Design Sprints",
-      "Up to 15 pages",
-      "Custom Animations",
-      "CMS Integration",
-      "Performance Monitoring",
-      "3 Months Support",
-      "A/B Testing Setup",
+      "AI Agents (Support / Sales)",
+      "Multi-Tool-Workflows",
+      "Individuelle Lösungen",
+      "CRM / API-Integration",
+      "Performance-Monitoring",
+      "3 Monate Support",
+      "Laufende Optimierung",
     ],
-    description: "For growing brands that need a full digital experience with custom interactions.",
-    buttonText: "GET STARTED",
-    href: "#",
+    description: "Für Unternehmen, die ihre Prozesse systematisch automatisieren und skalieren wollen.",
+    buttonText: "JETZT STARTEN",
+    href: "#kontakt",
     isPopular: true,
   },
   {
     name: "ENTERPRISE",
-    price: "14000",
-    yearlyPrice: "2490",
+    price: "0",
+    yearlyPrice: "0",
     period: "Projekt",
     features: [
-      "Unlimited Design Sprints",
-      "Unlimited Pages",
-      "3D / WebGL Experiences",
-      "Headless CMS",
-      "CI/CD Pipeline",
-      "Dedicated Team",
+      "Cloud-Architektur (AWS / Azure)",
+      "Systemdesign & Skalierung",
+      "Dediziertes Projektteam",
+      "Individuelle AI-Modelle",
       "24/7 Priority Support",
-      "Quarterly Strategy Reviews",
+      "Quartals-Reviews & Strategie",
+      "SLA-Garantie",
+      "Langfristige Partnerschaft",
     ],
-    description: "Full-scale digital transformation for established brands demanding excellence.",
-    buttonText: "CONTACT SALES",
-    href: "#",
+    description: "Komplexe Systeme, strategische Beratung und langfristige Partnerschaft — individuell auf Ihr Unternehmen zugeschnitten.",
+    buttonText: "KONTAKT",
+    href: "#kontakt",
     isPopular: false,
   },
 ];
 
 export function PricingSectionWrapper() {
   return (
-    <section id="pricing" className="relative py-32 px-6">
+    <section id="pakete" className="relative py-32 px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -76,7 +76,7 @@ export function PricingSectionWrapper() {
           className="text-center mb-4"
         >
           <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue block mb-4">
-            INVESTMENT
+            UNSERE PAKETE
           </span>
         </motion.div>
 

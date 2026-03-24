@@ -50,6 +50,7 @@ Pflege eine kleine TODO-Liste (siehe Abschnitt **Status & TODO**).
 - Hookify (Safety/Guardrails)
 - GitHub (PR/Issues/Actions)
 - Vercel / Supabase (nur falls Projekt sie nutzt)
+- Google Stitch 2.0 (Mockups/Design) — automatisch bei UI-Tasks via MCP
 - CLAUDE.md Management (darf am Ende Vorschläge als Diff machen)
 
 ### On-Demand Plugins (standardmäßig NICHT nutzen)

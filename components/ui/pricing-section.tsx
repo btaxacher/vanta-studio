@@ -31,8 +31,8 @@ interface PricingProps {
 
 export function Pricing({
   plans,
-  title = "Transparent Pricing",
-  description = "Choose the model that fits your ambition.\nEvery plan includes strategy, design, and development.",
+  title = "Klare Pakete",
+  description = "Wählen Sie das Modell, das zu Ihrem Vorhaben passt.\nJedes Paket beinhaltet Beratung, Konzept und Umsetzung.",
 }: PricingProps) {
   const [isMonthly, setIsMonthly] = useState(true);
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -99,7 +99,7 @@ export function Pricing({
           )}
         >
           Retainer{" "}
-          <span className="text-vanta-purple text-xs">(Save 20%)</span>
+          <span className="text-vanta-purple text-xs">(20% sparen)</span>
         </span>
       </div>
 
@@ -143,7 +143,7 @@ export function Pricing({
               <div className="absolute top-0 right-0 bg-vanta-purple py-0.5 px-3 rounded-bl-xl rounded-tr-xl flex items-center">
                 <Star className="text-white h-3.5 w-3.5 fill-current" />
                 <span className="text-white ml-1 font-mono-dm text-xs tracking-wider">
-                  Popular
+                  Beliebt
                 </span>
               </div>
             )}
@@ -152,34 +152,46 @@ export function Pricing({
                 {plan.name}
               </p>
               <div className="mt-6 flex items-center justify-center gap-x-2">
-                <span className="font-display text-5xl font-light tracking-tight text-white">
-                  <NumberFlow
-                    value={
-                      isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
-                    }
-                    format={{
-                      style: "currency",
-                      currency: "EUR",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    }}
-                    transformTiming={{
-                      duration: 500,
-                      easing: "ease-out",
-                    }}
-                    willChange
-                    className="font-variant-numeric: tabular-nums"
-                  />
-                </span>
-                {plan.period !== "Next 3 months" && (
-                  <span className="text-sm font-mono-dm leading-6 tracking-wide text-white/40">
-                    / {plan.period}
+                {Number(plan.price) === 0 && isMonthly ? (
+                  <span className="font-display text-4xl font-light tracking-tight text-white">
+                    Auf Anfrage
                   </span>
+                ) : Number(plan.yearlyPrice) === 0 && !isMonthly ? (
+                  <span className="font-display text-4xl font-light tracking-tight text-white">
+                    Auf Anfrage
+                  </span>
+                ) : (
+                  <>
+                    <span className="font-display text-5xl font-light tracking-tight text-white">
+                      <NumberFlow
+                        value={
+                          isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
+                        }
+                        format={{
+                          style: "currency",
+                          currency: "EUR",
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        }}
+                        transformTiming={{
+                          duration: 500,
+                          easing: "ease-out",
+                        }}
+                        willChange
+                        className="font-variant-numeric: tabular-nums"
+                      />
+                    </span>
+                    {plan.period !== "Next 3 months" && (
+                      <span className="text-sm font-mono-dm leading-6 tracking-wide text-white/40">
+                        / {plan.period}
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
 
               <p className="text-xs leading-5 text-white/30 mt-1">
-                {isMonthly ? "per project" : "billed monthly"}
+                {Number(plan.price) === 0 ? "individuelles Angebot" : isMonthly ? "pro Projekt" : "monatlich"}
               </p>
 
               <ul className="mt-6 gap-2.5 flex flex-col">

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VANTA STUDIO | Digital Experience Studio",
-  description: "We build experiences that leave marks. Crafting immersive digital worlds for brands that dare to be remembered.",
+  title: "VANTA SYSTEMS | AI-Automatisierung & Software",
+  description: "Wir automatisieren Geschäftsprozesse mit AI und Software. Weniger manuelle Arbeit, mehr Wachstum — für Unternehmen, die Zeit sparen wollen.",
 };
 
 export default function RootLayout({
@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="de">
       <body className="antialiased">
         {/* Grain overlay */}
         <div

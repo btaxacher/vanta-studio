@@ -7,37 +7,37 @@ import { GlowCard } from "@/components/ui/spotlight-card";
 
 const services = [
   {
-    title: "Web Design",
-    subtitle: "Pixel-perfect interfaces",
-    description: "We craft bespoke digital identities that turn visitors into loyal customers.",
-    features: ["UX Research", "Brand Systems", "Motion Design", "Responsive Build"],
+    title: "AI & Automatisierung",
+    subtitle: "Intelligente Prozesse",
+    description: "Wir bauen AI Agents und automatisieren Ihre wiederkehrenden Aufgaben — von der Kundenanfrage bis zur Rechnungsstellung.",
+    features: ["AI Agents", "Prozessautomatisierung", "Tool-Integrationen", "Individuelle Lösungen"],
     color: "#3ca2fa",
   },
   {
-    title: "Development",
-    subtitle: "Code that scales",
-    description: "Full-stack development with Next.js, TypeScript, and cutting-edge animations.",
-    features: ["Next.js / React", "API Architecture", "Performance First", "CI/CD Deploy"],
+    title: "Individuelle Software",
+    subtitle: "Maßgeschneiderte Lösungen",
+    description: "Interne Tools, Dashboards und Web-Apps — exakt auf Ihre Prozesse zugeschnitten, nicht von der Stange.",
+    features: ["Interne Tools", "Web-Applikationen", "Dashboards", "Prozessoptimierung"],
     color: "#9333EA",
   },
   {
-    title: "Strategy",
-    subtitle: "Direction with data",
-    description: "From positioning to conversion funnels — we align design with business outcomes.",
-    features: ["Brand Positioning", "Conversion Audit", "Content Strategy", "Analytics Setup"],
+    title: "Cloud & Consulting",
+    subtitle: "Architektur & Strategie",
+    description: "Skalierbare Infrastruktur und technische Beratung für Unternehmen mit komplexen Anforderungen.",
+    features: ["AWS / Azure", "Skalierung", "DevOps", "Technische Beratung"],
     color: "#06B6D4",
   },
 ];
 
 const stats = [
-  { value: "12", label: "avg. weeks to launch", color: "#3ca2fa" },
-  { value: "98%", label: "client satisfaction", color: "#9333EA" },
-  { value: "3x", label: "avg. conversion uplift", color: "#06B6D4" },
+  { value: "72h", label: "bis zum ersten Prototyp", color: "#3ca2fa" },
+  { value: "3x", label: "schnellere Prozesse", color: "#9333EA" },
+  { value: "85%", label: "Zeitersparnis bei Routineaufgaben", color: "#06B6D4" },
 ];
 
 export function ServicesSection() {
   return (
-    <section id="services" className="relative py-32 px-6">
+    <section id="leistungen" className="relative py-32 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Title */}
         <motion.div
@@ -48,12 +48,12 @@ export function ServicesSection() {
           className="mb-20"
         >
           <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue block mb-4">
-            WHAT WE DO
+            WAS WIR TUN
           </span>
           <h2 className="font-display text-5xl md:text-7xl font-light">
-            Services Built
+            Leistungen mit
             <br />
-            for Impact
+            Wirkung
           </h2>
         </motion.div>
 

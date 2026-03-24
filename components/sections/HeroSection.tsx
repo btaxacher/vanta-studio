@@ -31,7 +31,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue mb-8"
         >
-          DIGITAL EXPERIENCE STUDIO ✦ EST. 2019
+          AI-AUTOMATISIERUNG & SOFTWARE ✦ VANTA SYSTEMS
         </motion.div>
 
         {/* Headline */}
@@ -41,10 +41,10 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="font-display text-5xl md:text-7xl lg:text-[96px] font-light leading-[1.05] mb-6"
         >
-          We Build Digital
+          Geschäftsprozesse.
           <br />
           <span className="italic bg-gradient-to-r from-vanta-blue to-vanta-purple bg-clip-text text-transparent">
-            Experiences
+            Automatisiert.
           </span>
         </motion.h1>
 
@@ -55,7 +55,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="text-white/60 text-lg max-w-xl mx-auto mb-10"
         >
-          Crafting immersive digital worlds for brands that dare to be remembered.
+          Manuelle Prozesse kosten Zeit und Geld. Wir machen Schluss damit — mit intelligenter Automatisierung und maßgeschneiderter Software.
         </motion.p>
 
         {/* Search Bar CTA */}
@@ -76,10 +76,10 @@ export function HeroSection() {
           className="flex items-center justify-center gap-4 flex-wrap"
         >
           <div className="px-5 py-2.5 rounded-full border border-white/[0.08] backdrop-blur-sm bg-white/[0.03] text-sm text-white/70">
-            50+ Projects Delivered
+            50+ Prozesse automatisiert
           </div>
           <div className="px-5 py-2.5 rounded-full border border-white/[0.08] backdrop-blur-sm bg-white/[0.03] text-sm text-white/70">
-            4.9★ Client Rating
+            98% Kundenzufriedenheit
           </div>
         </motion.div>
       </div>

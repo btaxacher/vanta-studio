@@ -2,24 +2,32 @@
 
 import React from "react";
 import { TextHoverEffect } from "@/components/ui/hover-footer";
-import { Mail, MapPin, Twitter, Instagram, Linkedin, Dribbble } from "lucide-react";
+import { Mail, MapPin, Twitter, Linkedin, Github } from "lucide-react";
 
 const footerLinks = [
   {
-    title: "Company",
-    links: ["About", "Services", "Projects", "Careers"],
+    title: "Unternehmen",
+    links: [
+      { label: "Über uns", href: "/ueber-uns" },
+      { label: "Leistungen", href: "#leistungen" },
+      { label: "Use Cases", href: "/use-cases" },
+      { label: "Kontakt", href: "/kontakt" },
+    ],
   },
   {
-    title: "Legal",
-    links: ["Privacy", "Terms", "Imprint", "Contact"],
+    title: "Rechtliches",
+    links: [
+      { label: "Datenschutz", href: "#" },
+      { label: "AGB", href: "#" },
+      { label: "Impressum", href: "#" },
+    ],
   },
 ];
 
 const socialLinks = [
   { icon: Twitter, label: "Twitter" },
-  { icon: Instagram, label: "Instagram" },
   { icon: Linkedin, label: "LinkedIn" },
-  { icon: Dribbble, label: "Dribbble" },
+  { icon: Github, label: "GitHub" },
 ];
 
 export function FooterSection() {
@@ -40,19 +48,19 @@ export function FooterSection() {
           <div className="md:col-span-2">
             <div className="mb-4">
               <span className="font-display text-2xl text-white">VANTA</span>
-              <span className="font-mono-dm text-[10px] text-white/40 ml-2 tracking-wider">STUDIO</span>
+              <span className="font-mono-dm text-[10px] text-white/40 ml-2 tracking-wider">SYSTEMS</span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed max-w-sm mb-6">
-              We build experiences that leave marks. Crafting immersive digital worlds for brands that dare to be remembered.
+              Wir automatisieren Geschäftsprozesse mit AI und Software. Weniger manuelle Arbeit. Mehr Wachstum.
             </p>
             <div className="space-y-2 text-sm text-white/40">
               <div className="flex items-center gap-2">
                 <Mail size={14} className="text-vanta-blue" />
-                hello@vanta.studio
+                hello@vanta.systems
               </div>
               <div className="flex items-center gap-2">
                 <MapPin size={14} className="text-vanta-blue" />
-                Berlin, Germany
+                Berlin, Deutschland
               </div>
             </div>
           </div>
@@ -65,9 +73,9 @@ export function FooterSection() {
               </h4>
               <ul className="space-y-3">
                 {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-sm text-white/40 hover:text-white transition-colors">
-                      {link}
+                  <li key={link.label}>
+                    <a href={link.href} className="text-sm text-white/40 hover:text-white transition-colors">
+                      {link.label}
                     </a>
                   </li>
                 ))}
@@ -79,7 +87,7 @@ export function FooterSection() {
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 gap-4">
           <p className="text-xs text-white/30">
-            &copy; 2025 VANTA STUDIO. All rights reserved.
+            &copy; 2025 VANTA SYSTEMS. Alle Rechte vorbehalten.
           </p>
           <div className="flex items-center gap-4">
             {socialLinks.map(({ icon: Icon, label }) => (
