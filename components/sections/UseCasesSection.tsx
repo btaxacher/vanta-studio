@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { FileText, MessageCircle, Database, Workflow, Code } from "lucide-react";
+import { FileText, MessageCircle, Database, Workflow, Sparkles } from "lucide-react";
 
 const useCases = [
   {
@@ -34,10 +34,10 @@ const useCases = [
     color: "#3ca2fa",
   },
   {
-    icon: Code,
-    title: "AI-gestützte Entwicklung",
-    description: "Claude Code automatisiert Code-Reviews, generiert Dokumentation und beschleunigt Ihre Softwareentwicklung. Anthropic AI als fester Bestandteil Ihres Teams.",
-    metric: "3x schnellere Entwicklung",
+    icon: Sparkles,
+    title: "Claude AI & individuelle Tools",
+    description: "Claude als AI-Assistent in Ihrem Unternehmen — mit individuellen Skills und Plugins für Recherche, Analyse, Texterstellung und Entscheidungsfindung. Maßgeschneidert auf Ihre Prozesse für maximale Effizienz.",
+    metric: "Unbegrenzte Einsatzmöglichkeiten",
     color: "#D4A27F",
   },
 ];
