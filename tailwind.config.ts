@@ -19,9 +19,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["Cormorant Garamond", "serif"],
-        "mono-dm": ["DM Mono", "monospace"],
-        body: ["Inter", "sans-serif"],
+        display: ["var(--font-display)", "Cormorant Garamond", "serif"],
+        "mono-dm": ["var(--font-mono-dm)", "DM Mono", "monospace"],
+        body: ["var(--font-body)", "Inter", "sans-serif"],
       },
       animation: {
         "spin-slow": "spin 8s linear infinite",
