@@ -48,7 +48,7 @@ export default function ScalePage() {
             transition={{ duration: 0.8 }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-purple">
+              <span className="font-mono-dm text-xs uppercase tracking-label text-vanta-purple">
                 PAKET
               </span>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-vanta-purple text-white text-xs font-mono-dm">

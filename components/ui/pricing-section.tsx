@@ -148,7 +148,7 @@ export function Pricing({
               </div>
             )}
             <div className="flex-1 flex flex-col">
-              <p className="font-mono-dm text-xs uppercase tracking-[0.2em] text-white/50">
+              <p className="font-mono-dm text-xs uppercase tracking-sublabel text-white/50">
                 {plan.name}
               </p>
               <div className="mt-6 flex items-center justify-center gap-x-2">

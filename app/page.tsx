@@ -26,7 +26,7 @@ export default function Home() {
         logo={
           <div className="flex flex-col leading-none">
             <span className="font-display text-xl text-white tracking-wide">TXC</span>
-            <span className="font-mono-dm text-[9px] text-white/40 tracking-[0.3em]">SYSTEMS</span>
+            <span className="font-mono-dm text-2xs text-white/40 tracking-label">SYSTEMS</span>
           </div>
         }
         ctaButton={

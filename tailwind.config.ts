@@ -18,6 +18,13 @@ const config: Config = {
           cyan: "#06B6D4",
         },
       },
+      fontSize: {
+        "2xs": ["9px", { lineHeight: "1" }],
+      },
+      letterSpacing: {
+        label: "0.3em",
+        sublabel: "0.2em",
+      },
       fontFamily: {
         display: ["var(--font-display)", "Cormorant Garamond", "serif"],
         "mono-dm": ["var(--font-mono-dm)", "DM Mono", "monospace"],

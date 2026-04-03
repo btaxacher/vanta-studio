@@ -22,7 +22,7 @@ export function ProcessSection() {
         transition={{ duration: 0.8 }}
         className="text-center mb-8"
       >
-        <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue block mb-4">
+        <span className="font-mono-dm text-xs uppercase tracking-label text-vanta-blue block mb-4">
           SO ARBEITEN WIR
         </span>
         <h2 className="font-display text-5xl md:text-7xl font-light">Unser Prozess</h2>

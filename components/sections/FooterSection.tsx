@@ -48,7 +48,7 @@ export function FooterSection() {
           <div className="md:col-span-2">
             <div className="mb-4">
               <span className="font-display text-2xl text-white">TXC</span>
-              <span className="font-mono-dm text-[10px] text-white/40 ml-2 tracking-wider">SYSTEMS</span>
+              <span className="font-mono-dm text-2xs text-white/40 ml-2 tracking-wider">SYSTEMS</span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed max-w-sm mb-6">
               Wir automatisieren Geschäftsprozesse mit AI und Software. Weniger manuelle Arbeit. Mehr Wachstum.
@@ -68,7 +68,7 @@ export function FooterSection() {
           {/* Link Columns */}
           {footerLinks.map((col) => (
             <div key={col.title}>
-              <h4 className="font-mono-dm text-xs uppercase tracking-[0.2em] text-white/60 mb-4">
+              <h4 className="font-mono-dm text-xs uppercase tracking-sublabel text-white/60 mb-4">
                 {col.title}
               </h4>
               <ul className="space-y-3">

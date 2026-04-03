@@ -34,7 +34,7 @@ export default function UeberUnsPage() {
             transition={{ duration: 0.8 }}
             className="mb-20"
           >
-            <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue block mb-4">
+            <span className="font-mono-dm text-xs uppercase tracking-label text-vanta-blue block mb-4">
               ÜBER UNS
             </span>
             <h1 className="font-display text-5xl md:text-7xl font-light mb-6">

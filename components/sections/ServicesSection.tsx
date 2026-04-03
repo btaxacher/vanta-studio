@@ -47,7 +47,7 @@ export function ServicesSection() {
           transition={{ duration: 0.8 }}
           className="mb-20"
         >
-          <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue block mb-4">
+          <span className="font-mono-dm text-xs uppercase tracking-label text-vanta-blue block mb-4">
             WAS WIR TUN
           </span>
           <h2 className="font-display text-5xl md:text-7xl font-light">
@@ -86,7 +86,7 @@ export function ServicesSection() {
                   <div className="font-display text-6xl font-light mb-2" style={{ color: stat.color }}>
                     {stat.value}
                   </div>
-                  <div className="font-mono-dm text-xs uppercase tracking-[0.2em] text-white/40">
+                  <div className="font-mono-dm text-xs uppercase tracking-sublabel text-white/40">
                     {stat.label}
                   </div>
                 </div>

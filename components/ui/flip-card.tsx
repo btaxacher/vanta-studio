@@ -36,7 +36,7 @@ export function FlipCard({ title, subtitle, description, features, color }: Flip
         >
           <div>
             <div
-              className="font-mono-dm text-xs uppercase tracking-[0.3em] mb-4"
+              className="font-mono-dm text-xs uppercase tracking-label mb-4"
               style={{ color }}
             >
               {subtitle}

@@ -48,7 +48,7 @@ export default function EnterprisePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-cyan block mb-4">
+            <span className="font-mono-dm text-xs uppercase tracking-label text-vanta-cyan block mb-4">
               PAKET
             </span>
             <h1 className="font-display text-5xl md:text-6xl font-light mb-4">

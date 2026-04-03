@@ -29,7 +29,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue mb-8"
+          className="font-mono-dm text-xs uppercase tracking-label text-vanta-blue mb-8"
         >
           AI-AUTOMATISIERUNG & SOFTWARE ✦ TXC SYSTEMS
         </motion.div>
@@ -39,7 +39,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="font-display text-5xl md:text-7xl lg:text-[96px] font-light leading-[1.05] mb-6"
+          className="font-display text-5xl md:text-7xl lg:text-8xl font-light leading-[1.05] mb-6"
         >
           Geschäftsprozesse.
           <br />

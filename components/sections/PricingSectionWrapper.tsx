@@ -75,7 +75,7 @@ export function PricingSectionWrapper() {
           transition={{ duration: 0.8 }}
           className="text-center mb-4"
         >
-          <span className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue block mb-4">
+          <span className="font-mono-dm text-xs uppercase tracking-label text-vanta-blue block mb-4">
             UNSERE PAKETE
           </span>
         </motion.div>
