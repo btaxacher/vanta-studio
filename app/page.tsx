@@ -8,6 +8,7 @@ import { UseCasesSection } from "@/components/sections/UseCasesSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import { StackSection } from "@/components/sections/StackSection";
 import { PricingSectionWrapper } from "@/components/sections/PricingSectionWrapper";
+import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { FooterSection } from "@/components/sections/FooterSection";
 
 const navItems = [
@@ -46,6 +47,7 @@ export default function Home() {
       <ProcessSection />
       <StackSection />
       <PricingSectionWrapper />
+      <TestimonialsSection />
       <FooterSection />
     </main>
   );

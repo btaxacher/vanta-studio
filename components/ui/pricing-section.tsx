@@ -128,10 +128,10 @@ export function Pricing({
               opacity: { duration: 0.5 },
             }}
             className={cn(
-              "rounded-2xl border p-6 text-center lg:flex lg:flex-col lg:justify-center relative",
+              "rounded-2xl border p-8 text-center lg:flex lg:flex-col lg:justify-center relative",
               "bg-[#030305] flex flex-col",
               plan.isPopular
-                ? "border-vanta-purple/60 border-2"
+                ? "border-vanta-purple/60 border-2 bg-gradient-to-b from-vanta-purple/[0.08] via-transparent to-transparent"
                 : "border-white/[0.08]",
               !plan.isPopular && "mt-5",
               index === 0 || index === 2 ? "z-0" : "z-10",
@@ -153,11 +153,11 @@ export function Pricing({
               </p>
               <div className="mt-6 flex items-center justify-center gap-x-2">
                 {Number(plan.price) === 0 && isMonthly ? (
-                  <span className="font-display text-4xl font-light tracking-tight text-white">
+                  <span className="font-display text-4xl font-light tracking-tight bg-gradient-to-r from-vanta-blue to-vanta-purple bg-clip-text text-transparent">
                     Auf Anfrage
                   </span>
                 ) : Number(plan.yearlyPrice) === 0 && !isMonthly ? (
-                  <span className="font-display text-4xl font-light tracking-tight text-white">
+                  <span className="font-display text-4xl font-light tracking-tight bg-gradient-to-r from-vanta-blue to-vanta-purple bg-clip-text text-transparent">
                     Auf Anfrage
                   </span>
                 ) : (
@@ -207,7 +207,7 @@ export function Pricing({
                           : "text-vanta-cyan"
                       )}
                     />
-                    <span className="text-left text-sm text-white/60">
+                    <span className={cn("text-left text-sm", idx < 3 ? "text-white/70" : "text-white/50")}>
                       {feature}
                     </span>
                   </li>
@@ -224,7 +224,7 @@ export function Pricing({
                   "transform-gpu ring-offset-current transition-all duration-300 ease-out",
                   "hover:ring-2 hover:ring-offset-1",
                   plan.isPopular
-                    ? "bg-vanta-purple text-white hover:ring-vanta-purple"
+                    ? "bg-vanta-purple text-white hover:ring-vanta-purple shadow-[0_0_20px_rgba(147,51,234,0.3)]"
                     : "border border-white/[0.12] text-white/70 hover:text-white hover:bg-white/5 hover:ring-white/20"
                 )}
               >

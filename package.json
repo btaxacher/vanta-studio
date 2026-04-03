@@ -13,6 +13,8 @@
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-switch": "^1.2.6",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
     "@types/three": "^0.183.1",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
