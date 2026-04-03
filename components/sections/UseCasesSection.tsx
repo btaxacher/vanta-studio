@@ -42,6 +42,55 @@ const useCases = [
   },
 ];
 
+function UseCaseCard({ useCase, index }: { useCase: typeof useCases[number]; index: number }) {
+  return (
+    <motion.div
+      key={useCase.title}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="group rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 hover:border-white/[0.15] hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(60,162,250,0.04)] transition-all duration-500 relative overflow-hidden"
+    >
+      {/* Top accent line */}
+      <div
+        className="absolute top-0 left-8 right-8 h-[1px]"
+        style={{ background: `linear-gradient(90deg, transparent, ${useCase.color}40, transparent)` }}
+      />
+
+      {/* Icon */}
+      <div
+        className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border transition-transform duration-300 group-hover:-translate-y-0.5"
+        style={{ backgroundColor: `${useCase.color}10`, borderColor: `${useCase.color}20` }}
+      >
+        <useCase.icon size={22} style={{ color: useCase.color }} />
+      </div>
+
+      {/* Title */}
+      <h3 className="font-display text-xl font-normal text-white mb-3">
+        {useCase.title}
+      </h3>
+
+      {/* Description */}
+      <p className="text-white/50 text-sm leading-relaxed mb-5">
+        {useCase.description}
+      </p>
+
+      {/* Metric Badge */}
+      <span
+        className="inline-block px-3 py-1.5 rounded-full text-xs font-mono-dm uppercase tracking-wider border"
+        style={{
+          color: useCase.color,
+          borderColor: `${useCase.color}30`,
+          backgroundColor: `${useCase.color}08`,
+        }}
+      >
+        {useCase.metric}
+      </span>
+    </motion.div>
+  );
+}
+
 export function UseCasesSection() {
   return (
     <section id="use-cases" className="relative py-32 px-6">
@@ -64,43 +113,17 @@ export function UseCasesSection() {
           </h2>
         </motion.div>
 
-        {/* Use Case Grid */}
+        {/* First row: 3 cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {useCases.map((useCase, index) => (
-            <motion.div
-              key={useCase.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 hover:border-white/[0.15] hover:bg-white/[0.04] transition-all"
-            >
-              {/* Icon */}
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
-                style={{ backgroundColor: `${useCase.color}15` }}
-              >
-                <useCase.icon size={20} style={{ color: useCase.color }} />
-              </div>
+          {useCases.slice(0, 3).map((useCase, index) => (
+            <UseCaseCard key={useCase.title} useCase={useCase} index={index} />
+          ))}
+        </div>
 
-              {/* Title */}
-              <h3 className="font-display text-lg text-white mb-3">
-                {useCase.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-white/50 text-sm leading-relaxed mb-4">
-                {useCase.description}
-              </p>
-
-              {/* Metric Badge */}
-              <span
-                className="inline-block px-3 py-1 rounded-full text-xs font-mono-dm uppercase tracking-wider border"
-                style={{ color: useCase.color, borderColor: `${useCase.color}30` }}
-              >
-                {useCase.metric}
-              </span>
-            </motion.div>
+        {/* Second row: 2 cards, centered */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:max-w-[calc(66.666%+0.75rem)] mx-auto mt-6">
+          {useCases.slice(3).map((useCase, index) => (
+            <UseCaseCard key={useCase.title} useCase={useCase} index={index + 3} />
           ))}
         </div>
       </div>
