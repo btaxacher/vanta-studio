@@ -31,7 +31,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="font-mono-dm text-xs uppercase tracking-[0.3em] text-vanta-blue mb-8"
         >
-          AI-AUTOMATISIERUNG & SOFTWARE ✦ VANTA SYSTEMS
+          AI-AUTOMATISIERUNG & SOFTWARE ✦ TXC SYSTEMS
         </motion.div>
 
         {/* Headline */}

@@ -32,7 +32,7 @@ export function ProcessSection() {
         {/* PulseBeams Background */}
         <PulseBeams className="w-full h-[500px]">
           <div className="px-6 py-4 rounded-xl border border-white/[0.08] bg-[#030305]/80 backdrop-blur-sm">
-            <span className="font-display text-xl text-white">VANTA</span>
+            <span className="font-display text-xl text-white">TXC</span>
           </div>
         </PulseBeams>
 

@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Pricing } from "@/components/ui/pricing-section";
 
-const vantaPlans = [
+const txcPlans = [
   {
     name: "AUTOMATE",
     price: "990",
@@ -86,7 +86,7 @@ export function PricingSectionWrapper() {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <Pricing plans={vantaPlans} />
+          <Pricing plans={txcPlans} />
         </motion.div>
       </div>
 

@@ -120,7 +120,7 @@ export default function KontaktPage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3 text-white/50 text-sm">
                   <Mail size={18} className="text-vanta-blue" />
-                  hello@vanta.systems
+                  info@txc.systems
                 </div>
                 <div className="flex items-center gap-3 text-white/50 text-sm">
                   <MapPin size={18} className="text-vanta-blue" />

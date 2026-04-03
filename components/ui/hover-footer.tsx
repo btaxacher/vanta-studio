@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 export const TextHoverEffect = ({
-  text = "VANTA",
+  text = "TXC",
   duration,
   className,
 }: {
@@ -172,8 +172,8 @@ export function HoverFooter() {
   const contactInfo = [
     {
       icon: <Mail size={18} className="text-[#3ca2fa]" />,
-      text: "hello@vanta.studio",
-      href: "mailto:hello@vanta.studio",
+      text: "info@txc.systems",
+      href: "mailto:info@txc.systems",
     },
     {
       icon: <MapPin size={18} className="text-[#3ca2fa]" />,
@@ -196,10 +196,10 @@ export function HoverFooter() {
           <div className="flex flex-col space-y-4">
             <div className="flex items-center space-x-2">
               <span className="text-[#f5f5f7] text-3xl font-bold tracking-tight">
-                VANTA
+                TXC
               </span>
               <span className="text-[#3ca2fa] text-3xl font-light">
-                STUDIO
+                SYSTEMS
               </span>
             </div>
             <p className="text-sm leading-relaxed text-gray-400">
@@ -275,14 +275,14 @@ export function HoverFooter() {
 
           {/* Copyright */}
           <p className="text-center md:text-left text-gray-400">
-            &copy; 2025 VANTA STUDIO. All rights reserved.
+            &copy; 2025 TXC Systems. All rights reserved.
           </p>
         </div>
       </div>
 
       {/* Text hover effect */}
       <div className="lg:flex hidden h-[30rem] -mt-52 -mb-36">
-        <TextHoverEffect text="VANTA" className="z-50" />
+        <TextHoverEffect text="TXC" className="z-50" />
       </div>
 
       <FooterBackgroundGradient />

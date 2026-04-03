@@ -25,7 +25,7 @@ export default function Home() {
         items={navItems}
         logo={
           <div className="flex flex-col leading-none">
-            <span className="font-display text-xl text-white tracking-wide">VANTA</span>
+            <span className="font-display text-xl text-white tracking-wide">TXC</span>
             <span className="font-mono-dm text-[9px] text-white/40 tracking-[0.3em]">SYSTEMS</span>
           </div>
         }

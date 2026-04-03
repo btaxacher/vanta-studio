@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VANTA SYSTEMS | AI-Automatisierung & Software",
+  title: "TXC Systems | AI-Automatisierung & Software",
   description: "Wir automatisieren Geschäftsprozesse mit AI und Software. Weniger manuelle Arbeit, mehr Wachstum — für Unternehmen, die Zeit sparen wollen.",
 };
 

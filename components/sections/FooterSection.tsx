@@ -39,7 +39,7 @@ export function FooterSection() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* TextHoverEffect */}
         <div className="h-[20rem] flex items-center justify-center mb-16">
-          <TextHoverEffect text="VANTA" />
+          <TextHoverEffect text="TXC" />
         </div>
 
         {/* Footer Content */}
@@ -47,7 +47,7 @@ export function FooterSection() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="mb-4">
-              <span className="font-display text-2xl text-white">VANTA</span>
+              <span className="font-display text-2xl text-white">TXC</span>
               <span className="font-mono-dm text-[10px] text-white/40 ml-2 tracking-wider">SYSTEMS</span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed max-w-sm mb-6">
@@ -56,7 +56,7 @@ export function FooterSection() {
             <div className="space-y-2 text-sm text-white/40">
               <div className="flex items-center gap-2">
                 <Mail size={14} className="text-vanta-blue" />
-                hello@vanta.systems
+                info@txc.systems
               </div>
               <div className="flex items-center gap-2">
                 <MapPin size={14} className="text-vanta-blue" />
@@ -87,7 +87,7 @@ export function FooterSection() {
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 gap-4">
           <p className="text-xs text-white/30">
-            &copy; 2025 VANTA SYSTEMS. Alle Rechte vorbehalten.
+            &copy; 2025 TXC Systems. Alle Rechte vorbehalten.
           </p>
           <div className="flex items-center gap-4">
             {socialLinks.map(({ icon: Icon, label }) => (

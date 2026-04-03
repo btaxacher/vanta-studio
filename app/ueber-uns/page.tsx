@@ -38,7 +38,7 @@ export default function UeberUnsPage() {
               ÜBER UNS
             </span>
             <h1 className="font-display text-5xl md:text-7xl font-light mb-6">
-              Vanta Systems
+              TXC Systems
             </h1>
             <p className="text-white/50 text-lg max-w-2xl leading-relaxed">
               Wir automatisieren Geschäftsprozesse mit AI und Software. Kein Buzzword-Bingo — sondern echte Lösungen, die messbar Zeit sparen.
@@ -55,7 +55,7 @@ export default function UeberUnsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="rounded-2xl border border-red-500/20 p-8">
                 <h3 className="font-mono-dm text-xs uppercase tracking-wider text-red-400 mb-4">
-                  Vanta Systems ist NICHT
+                  TXC Systems ist NICHT
                 </h3>
                 <ul className="space-y-3 text-white/50 text-sm">
                   <li className="flex items-center gap-2">
@@ -71,7 +71,7 @@ export default function UeberUnsPage() {
               </div>
               <div className="rounded-2xl border border-vanta-blue/30 p-8">
                 <h3 className="font-mono-dm text-xs uppercase tracking-wider text-vanta-blue mb-4">
-                  Vanta Systems IST
+                  TXC Systems IST
                 </h3>
                 <ul className="space-y-3 text-white/50 text-sm">
                   <li className="flex items-center gap-2">
